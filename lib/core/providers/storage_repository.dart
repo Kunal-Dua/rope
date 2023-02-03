@@ -15,11 +15,15 @@ class StorageRepository {
   StorageRepository({required FirebaseStorage firebaseStorage})
       : _firebaseStorage = firebaseStorage;
 
-  Future<List<String>> uploadImage(List<File> files) async {
-    final ref = _firebaseStorage.ref().child("images");
+  Future<List<String>> uploadImage(
+      {required List<File> images, required String uid}) async {
+    Reference ref = _firebaseStorage.ref().child("tweets").child(uid);
     List<String> imageLinks = [];
-    for (final file in files) {
-      final uploadTask = await ref.putFile(file);
+    for (final file in images) {
+      String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+
+      final uploadTask =
+          await ref.child(uniqueFileName).putFile(File(file.path));
       final snapshot = uploadTask;
       imageLinks.add(await snapshot.ref.getDownloadURL());
     }

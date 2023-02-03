@@ -7,18 +7,22 @@ import 'package:rope/core/enums/tweet_type_enums.dart';
 
 class TweetModel {
   final String uid;
+  final String senderPhotoUrl;
+  final String senderName;
   final String text;
   final String link;
   final List<String> hashtags;
   final List<String> imageLinks;
   final TweetType tweetType;
-  final datePublished;
+  final DateTime datePublished;
   final List<String> likes;
   final List<String> commentIds;
   final String Id;
   final int reshareCount;
   TweetModel({
     required this.uid,
+    required this.senderPhotoUrl,
+    required this.senderName,
     required this.text,
     required this.link,
     required this.hashtags,
@@ -33,6 +37,8 @@ class TweetModel {
 
   TweetModel copyWith({
     String? uid,
+    String? senderPhotoUrl,
+    String? senderName,
     String? text,
     String? link,
     List<String>? hashtags,
@@ -46,6 +52,8 @@ class TweetModel {
   }) {
     return TweetModel(
       uid: uid ?? this.uid,
+      senderPhotoUrl: senderPhotoUrl ?? this.senderPhotoUrl,
+      senderName: senderName ?? this.senderName,
       text: text ?? this.text,
       link: link ?? this.link,
       hashtags: hashtags ?? this.hashtags,
@@ -62,6 +70,8 @@ class TweetModel {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'uid': uid,
+      'senderPhotoUrl': senderPhotoUrl,
+      'senderName': senderName,
       'text': text,
       'link': link,
       'hashtags': hashtags,
@@ -77,16 +87,17 @@ class TweetModel {
   factory TweetModel.fromMap(Map<String, dynamic> map) {
     return TweetModel(
       uid: map['uid'] as String,
+      senderPhotoUrl: map['senderPhotoUrl'] as String,
+      senderName: map['senderName'] as String,
       text: map['text'] as String,
       link: map['link'] as String,
       hashtags: List<String>.from((map['hashtags'] as List<String>)),
-      imageLinks: List<String>.from((map['imageLinks'] as List<String>)),
+      imageLinks: map['imageLinks'] as List<String>,
       tweetType: (map['tweetType'] as String).toTweetTypeEnum(),
-      datePublished:
-          DateTime.fromMillisecondsSinceEpoch(map['datePublished'] as int),
+      datePublished: DateTime.fromMillisecondsSinceEpoch(map['datePublished']),
       likes: List<String>.from((map['likes'] as List<String>)),
       commentIds: List<String>.from((map['commentIds'] as List<String>)),
-      Id: map['\$Id'] as String,
+      Id: map['Id'] as String,
       reshareCount: map['reshareCount'] as int,
     );
   }
@@ -98,7 +109,7 @@ class TweetModel {
 
   @override
   String toString() {
-    return 'TweetModel(uid: $uid, text: $text, link: $link, hashtags: $hashtags, imageLinks: $imageLinks, tweetType: $tweetType, datePublished: $datePublished, likes: $likes, commentIds: $commentIds, Id: $Id, reshareCount: $reshareCount)';
+    return 'TweetModel(uid: $uid, senderPhotoUrl: $senderPhotoUrl, senderName: $senderName, text: $text, link: $link, hashtags: $hashtags, imageLinks: $imageLinks, tweetType: $tweetType, datePublished: $datePublished, likes: $likes, commentIds: $commentIds, Id: $Id, reshareCount: $reshareCount)';
   }
 
   @override
@@ -106,6 +117,8 @@ class TweetModel {
     if (identical(this, other)) return true;
 
     return other.uid == uid &&
+        other.senderPhotoUrl == senderPhotoUrl &&
+        other.senderName == senderName &&
         other.text == text &&
         other.link == link &&
         listEquals(other.hashtags, hashtags) &&
@@ -121,6 +134,8 @@ class TweetModel {
   @override
   int get hashCode {
     return uid.hashCode ^
+        senderPhotoUrl.hashCode ^
+        senderName.hashCode ^
         text.hashCode ^
         link.hashCode ^
         hashtags.hashCode ^

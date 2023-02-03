@@ -67,16 +67,20 @@ class TweetController extends StateNotifier<bool> {
     String link = _getLinkFromText(text);
     final hashtags = _getHashtagFromText(text);
     final user = _ref.read(userProvider)!;
-    final imageLinks = await _storageRepository.uploadImage(images);
+
+    final imageLinks =
+        await _storageRepository.uploadImage(images: images, uid: user.uid);
 
     TweetModel tweet = TweetModel(
         uid: user.uid,
+        senderPhotoUrl: user.profileUrl,
+        senderName: user.name,
         text: text,
         link: link,
         hashtags: hashtags,
         imageLinks: imageLinks,
-        tweetType: TweetType.text,
-        datePublished: Timestamp.now(),
+        tweetType: TweetType.image,
+        datePublished: DateTime.now(),
         likes: [],
         commentIds: [],
         Id: '',
@@ -97,12 +101,14 @@ class TweetController extends StateNotifier<bool> {
     final user = _ref.read(userProvider)!;
     TweetModel tweet = TweetModel(
         uid: user.uid,
+        senderPhotoUrl: user.profileUrl,
+        senderName: user.name,
         text: text,
         link: link,
         hashtags: hashtags,
         imageLinks: [],
         tweetType: TweetType.text,
-        datePublished: Timestamp.now(),
+        datePublished: DateTime.now(),
         likes: [],
         commentIds: [],
         Id: '',
