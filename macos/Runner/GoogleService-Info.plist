@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>346131389121-o2cfi4rinaa2g1pj1ro19d0jujic230i.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.346131389121-o2cfi4rinaa2g1pj1ro19d0jujic230i</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCY_Sl6fW6nubwVZ5-Gp_F9xQePp9_Vsvs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>346131389121</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.rope</string>
+	<key>PROJECT_ID</key>
+	<string>rope-17617</string>
+	<key>STORAGE_BUCKET</key>
+	<string>rope-17617.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:346131389121:ios:320ec35be1968873bd5240</string>
+</dict>
+</plist>
