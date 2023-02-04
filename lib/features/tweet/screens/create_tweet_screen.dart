@@ -29,6 +29,7 @@ class _CreateTweetScreenState extends ConsumerState<CreateTweetScreen> {
         );
     textEditingController.text = "";
     images = [];
+    Navigator.pop(context);
   }
 
   void onPickImages() async {
