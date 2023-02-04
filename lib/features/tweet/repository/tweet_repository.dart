@@ -37,7 +37,6 @@ class TweetRepository {
   Stream getUpdatedTweet() {
     final doc =
         _firestore.collection("tweets").snapshots().map((event) => event.docs);
-    print('doc ${doc}');
     return doc;
   }
 }
