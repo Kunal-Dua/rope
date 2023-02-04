@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
@@ -20,29 +19,44 @@ class TweetRepository {
     required FirebaseFirestore firestore,
   }) : _firestore = firestore;
 
-  FutureEither<DocumentReference> shareTweet(TweetModel tweet) async {
+  FutureEither<void> shareTweet(TweetModel tweet) async {
     try {
-      final document = await _firestore.collection("tweets").add(tweet.toMap());
+      final document = await _firestore
+          .collection("tweets")
+          .doc(tweet.id)
+          .set(tweet.toMap());
       return right(document);
     } catch (e) {
       return left(Failure(e.toString()));
     }
   }
 
-  Future<List> getTweets() async {
-    final document = await _firestore
-        .collection("tweets")
-        .orderBy("datePublished", descending: true)
-        .get();
-    return document.docs.map((doc) => doc.data()).toList();
+  Future<List<TweetModel>> getTweets() async {
+    final document = await _firestore.collection("tweets").get();
+    return document.docs.map((doc) => TweetModel.fromMap(doc.data())).toList();
   }
 
-  Stream getUpdatedTweet() {
-    final doc = _firestore
+  Stream<List<TweetModel>> getUpdatedTweet() {
+    return _firestore
         .collection("tweets")
         .orderBy("datePublished", descending: true)
         .snapshots()
-        .map((event) => event.docs);
-    return doc;
+        .map((event) {
+      List<TweetModel> doc = [];
+      for (var document in event.docs) {
+        doc.add(TweetModel.fromMap(document.data()));
+      }
+      return doc;
+    });
+  }
+
+  Future likeTweet(TweetModel tweet) async {
+    try {
+      final document = _firestore.collection("tweets").doc(tweet.id).update({
+        "likes": tweet.likes,
+      });
+    } catch (e) {
+      return print(e.toString());
+    }
   }
 }

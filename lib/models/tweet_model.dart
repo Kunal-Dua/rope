@@ -1,8 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
-
 import 'package:rope/core/enums/tweet_type_enums.dart';
 
 class TweetModel {
@@ -17,7 +15,7 @@ class TweetModel {
   final DateTime datePublished;
   final List<String> likes;
   final List<String> commentIds;
-  final String Id;
+  final String id;
   final int reshareCount;
   TweetModel({
     required this.uid,
@@ -31,7 +29,7 @@ class TweetModel {
     required this.datePublished,
     required this.likes,
     required this.commentIds,
-    required this.Id,
+    required this.id,
     required this.reshareCount,
   });
 
@@ -47,7 +45,7 @@ class TweetModel {
     DateTime? datePublished,
     List<String>? likes,
     List<String>? commentIds,
-    String? Id,
+    String? id,
     int? reshareCount,
   }) {
     return TweetModel(
@@ -62,7 +60,7 @@ class TweetModel {
       datePublished: datePublished ?? this.datePublished,
       likes: likes ?? this.likes,
       commentIds: commentIds ?? this.commentIds,
-      Id: Id ?? this.Id,
+      id: id ?? this.id,
       reshareCount: reshareCount ?? this.reshareCount,
     );
   }
@@ -79,6 +77,7 @@ class TweetModel {
       'tweetType': tweetType.type,
       'datePublished': datePublished.millisecondsSinceEpoch,
       'likes': likes,
+      'id': id,
       'commentIds': commentIds,
       'reshareCount': reshareCount,
     };
@@ -91,13 +90,13 @@ class TweetModel {
       senderName: map['senderName'] as String,
       text: map['text'] as String,
       link: map['link'] as String,
-      hashtags: List<String>.from((map['hashtags'] as List<String>)),
-      imageLinks: map['imageLinks'] as List<String>,
+      hashtags: List<String>.from(map['hashtags']),
+      imageLinks: List<String>.from(map['imageLinks']),
       tweetType: (map['tweetType'] as String).toTweetTypeEnum(),
       datePublished: DateTime.fromMillisecondsSinceEpoch(map['datePublished']),
-      likes: List<String>.from((map['likes'] as List<String>)),
-      commentIds: List<String>.from((map['commentIds'] as List<String>)),
-      Id: map['Id'] as String,
+      likes: List<String>.from(map['likes']),
+      commentIds: List<String>.from(map['commentIds']),
+      id: map['id'] as String,
       reshareCount: map['reshareCount'] as int,
     );
   }
@@ -109,7 +108,7 @@ class TweetModel {
 
   @override
   String toString() {
-    return 'TweetModel(uid: $uid, senderPhotoUrl: $senderPhotoUrl, senderName: $senderName, text: $text, link: $link, hashtags: $hashtags, imageLinks: $imageLinks, tweetType: $tweetType, datePublished: $datePublished, likes: $likes, commentIds: $commentIds, Id: $Id, reshareCount: $reshareCount)';
+    return 'TweetModel(uid: $uid, senderPhotoUrl: $senderPhotoUrl, senderName: $senderName, text: $text, link: $link, hashtags: $hashtags, imageLinks: $imageLinks, tweetType: $tweetType, datePublished: $datePublished, likes: $likes, commentIds: $commentIds, id: $id, reshareCount: $reshareCount)';
   }
 
   @override
@@ -127,7 +126,7 @@ class TweetModel {
         other.datePublished == datePublished &&
         listEquals(other.likes, likes) &&
         listEquals(other.commentIds, commentIds) &&
-        other.Id == Id &&
+        other.id == id &&
         other.reshareCount == reshareCount;
   }
 
@@ -144,7 +143,7 @@ class TweetModel {
         datePublished.hashCode ^
         likes.hashCode ^
         commentIds.hashCode ^
-        Id.hashCode ^
+        id.hashCode ^
         reshareCount.hashCode;
   }
 }

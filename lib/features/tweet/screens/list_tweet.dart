@@ -15,7 +15,7 @@ class ListTweet extends ConsumerWidget {
             return ref.watch(getUpdatedTweetsProvider).when(
                   data: (data) {
                     return ListView.builder(
-                      itemCount: data.length,
+                      itemCount: tweets.length,
                       itemBuilder: (BuildContext context, int index) {
                         final tweet = data[index];
                         return TweetCard(tweet: tweet);
@@ -25,14 +25,14 @@ class ListTweet extends ConsumerWidget {
                   error: (error, stackTrace) =>
                       ErrorText(error: error.toString()),
                   loading: (() => const Loader()),
+                  // );
+                  // return ListView.builder(
+                  //   itemCount: tweets.length,
+                  //   itemBuilder: (BuildContext context, int index) {
+                  //     final tweet = tweets[index];
+                  //     return TweetCard(tweet: tweet);
+                  //   },
                 );
-            // return ListView.builder(
-            //   itemCount: tweets.length,
-            //   itemBuilder: (BuildContext context, int index) {
-            //     final tweet = tweets[index];
-            //     return TweetCard(tweet:tweet);
-            //   },
-            // );
           },
           error: (error, stackTrace) => ErrorText(error: error.toString()),
           loading: (() => const Loader()),

@@ -24,6 +24,12 @@ final getUserDataProvider = StreamProvider.family((ref, String uid) {
   return authController.getUserData(uid);
 });
 
+final getCurrentUserDataProvider = FutureProvider((ref) {
+  final currentUserId = FirebaseAuth.instance.currentUser!.uid;
+  final userDetails = ref.watch(getUserDataProvider(currentUserId));
+  return userDetails.value;
+});
+
 class AuthController extends StateNotifier<bool> {
   final AuthRepository _authRepository;
   final Ref _ref;

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rope/core/enums/tweet_type_enums.dart';
@@ -9,6 +8,8 @@ import 'package:rope/core/utils.dart';
 import 'package:rope/features/auth/controller/auth_controller.dart';
 import 'package:rope/features/tweet/repository/tweet_repository.dart';
 import 'package:rope/models/tweet_model.dart';
+import 'package:rope/models/user_model.dart';
+import 'package:uuid/uuid.dart';
 
 final tweetControllerProvider =
     StateNotifierProvider<TweetController, bool>((ref) {
@@ -24,7 +25,11 @@ final getTweetsProvider = FutureProvider((ref) {
   return tweetController.getTweets();
 });
 
-final getUpdatedTweetsProvider = StreamProvider((ref) {
+// Stream<List<TweetModel>> getUpdatedTweets() {
+//   return tweetRepository.getUpdatedTweet();
+// }
+
+final getUpdatedTweetsProvider = StreamProvider<List<TweetModel>>((ref) {
   final tweet = ref.watch(tweetProvider);
   return tweet.getUpdatedTweet();
 });
@@ -43,9 +48,24 @@ class TweetController extends StateNotifier<bool> {
         _tweetRepository = tweetRepository,
         super(false);
 
-  Future<List> getTweets() async {
+  Future<List<TweetModel>> getTweets() async {
     final tweetList = await _tweetRepository.getTweets();
     return tweetList;
+  }
+
+  void likeTweet(TweetModel tweet, UserModel user) async {
+    try {
+      List<String> likes = tweet.likes;
+      if (likes.contains(user.uid)) {
+        likes.remove(user.uid);
+      } else {
+        likes.add(user.uid);
+      }
+      tweet = tweet.copyWith(likes: likes);
+      await _tweetRepository.likeTweet(tweet);
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   void shareTweet({
@@ -76,7 +96,7 @@ class TweetController extends StateNotifier<bool> {
 
     final imageLinks =
         await _storageRepository.uploadImage(images: images, uid: user.uid);
-
+    String newId = Uuid().v1();
     TweetModel tweet = TweetModel(
         uid: user.uid,
         senderPhotoUrl: user.profileUrl,
@@ -89,7 +109,7 @@ class TweetController extends StateNotifier<bool> {
         datePublished: DateTime.now(),
         likes: [],
         commentIds: [],
-        Id: '',
+        id: newId,
         reshareCount: 0);
 
     final res = await _tweetRepository.shareTweet(tweet);
@@ -105,6 +125,7 @@ class TweetController extends StateNotifier<bool> {
     final hashtags = _getHashtagFromText(text);
     String link = _getLinkFromText(text);
     final user = _ref.read(userProvider)!;
+    String newId = Uuid().v1();
     TweetModel tweet = TweetModel(
         uid: user.uid,
         senderPhotoUrl: user.profileUrl,
@@ -117,7 +138,7 @@ class TweetController extends StateNotifier<bool> {
         datePublished: DateTime.now(),
         likes: [],
         commentIds: [],
-        Id: '',
+        id: newId,
         reshareCount: 0);
 
     final res = await _tweetRepository.shareTweet(tweet);
