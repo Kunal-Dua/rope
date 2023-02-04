@@ -1,6 +1,8 @@
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:like_button/like_button.dart';
 import 'package:rope/core/enums/tweet_type_enums.dart';
 import 'package:rope/features/tweet/widgets/carousel_image.dart';
 import 'package:rope/features/tweet/widgets/hashtags_text.dart';
@@ -90,10 +92,34 @@ class TweetCard extends ConsumerWidget {
                           text: tweet['reshareCount'].toString(),
                           onTap: () {},
                         ),
-                        TweetIconButton(
-                          pathName: "assets/svgs/like_outlined.svg",
-                          text: tweet['likes'].length.toString(),
-                          onTap: () {},
+                        LikeButton(
+                          size: 25,
+                          likeBuilder: (isLiked) {
+                            return isLiked
+                                ? SvgPicture.asset(
+                                    "assets/svgs/like_filled.svg",
+                                    color: Pallete.redColor,
+                                  )
+                                : SvgPicture.asset(
+                                    "assets/svgs/like_outlined.svg",
+                                    color: Pallete.greyColor,
+                                  );
+                          },
+                          likeCount: tweet['likes'].length,
+                          countBuilder: (likeCount, isLiked, text) {
+                            return Padding(
+                              padding: const EdgeInsets.only(left: 2.0),
+                              child: Text(
+                                text,
+                                style: TextStyle(
+                                  color: isLiked
+                                      ? Pallete.redColor
+                                      : Pallete.whiteColor,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                         IconButton(
                           onPressed: () {},
