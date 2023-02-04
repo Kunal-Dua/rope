@@ -99,8 +99,6 @@ class TweetController extends StateNotifier<bool> {
     String newId = Uuid().v1();
     TweetModel tweet = TweetModel(
         uid: user.uid,
-        senderPhotoUrl: user.profileUrl,
-        senderName: user.name,
         text: text,
         link: link,
         hashtags: hashtags,
@@ -128,8 +126,6 @@ class TweetController extends StateNotifier<bool> {
     String newId = Uuid().v1();
     TweetModel tweet = TweetModel(
         uid: user.uid,
-        senderPhotoUrl: user.profileUrl,
-        senderName: user.name,
         text: text,
         link: link,
         hashtags: hashtags,

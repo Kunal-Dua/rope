@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
@@ -32,7 +31,10 @@ class TweetRepository {
   }
 
   Future<List<TweetModel>> getTweets() async {
-    final document = await _firestore.collection("tweets").get();
+    final document = await _firestore
+        .collection("tweets")
+        .orderBy("datePublished", descending: true)
+        .get();
     return document.docs.map((doc) => TweetModel.fromMap(doc.data())).toList();
   }
 
