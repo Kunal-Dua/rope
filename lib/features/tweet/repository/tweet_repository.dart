@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
@@ -28,7 +30,14 @@ class TweetRepository {
   }
 
   Future<List> getTweets() async {
-    var document = await _firestore.collection("tweets").get();
+    final document = await _firestore.collection("tweets").get();
     return document.docs.map((doc) => doc.data()).toList();
+  }
+
+  Stream getUpdatedTweet() {
+    final doc =
+        _firestore.collection("tweets").snapshots().map((event) => event.docs);
+    print('doc ${doc}');
+    return doc;
   }
 }

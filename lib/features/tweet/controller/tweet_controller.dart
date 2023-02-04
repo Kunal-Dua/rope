@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,11 @@ final tweetControllerProvider =
 final getTweetsProvider = FutureProvider((ref) {
   final tweetController = ref.watch(tweetControllerProvider.notifier);
   return tweetController.getTweets();
+});
+
+final getUpdatedTweetsProvider = StreamProvider((ref) {
+  final tweet = ref.watch(tweetProvider);
+  return tweet.getUpdatedTweet();
 });
 
 class TweetController extends StateNotifier<bool> {

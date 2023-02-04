@@ -10,18 +10,32 @@ class ListTweet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(getTweetsProvider).when(
-          data: (tweets) {
+    // return ref.watch(getTweetsProvider).when(
+    // data: (tweets) {
+    return ref.watch(getUpdatedTweetsProvider).when(
+          data: (data) {
             return ListView.builder(
-              itemCount: tweets.length,
+              itemCount: data.length,
               itemBuilder: (BuildContext context, int index) {
-                final tweet = tweets[index];
-                return TweetCard(tweet:tweet);
+                final tweet = data[index];
+                print(tweet["text"]);
+                return TweetCard(tweet: tweet);
               },
             );
           },
           error: (error, stackTrace) => ErrorText(error: error.toString()),
           loading: (() => const Loader()),
         );
+    // return ListView.builder(
+    //   itemCount: tweets.length,
+    //   itemBuilder: (BuildContext context, int index) {
+    //     final tweet = tweets[index];
+    //     return TweetCard(tweet:tweet);
+    //   },
+    // );
+    // },
+    // error: (error, stackTrace) => ErrorText(error: error.toString()),
+    // loading: (() => const Loader()),
+    // );
   }
 }
