@@ -30,13 +30,19 @@ class TweetRepository {
   }
 
   Future<List> getTweets() async {
-    final document = await _firestore.collection("tweets").get();
+    final document = await _firestore
+        .collection("tweets")
+        .orderBy("datePublished", descending: true)
+        .get();
     return document.docs.map((doc) => doc.data()).toList();
   }
 
   Stream getUpdatedTweet() {
-    final doc =
-        _firestore.collection("tweets").snapshots().map((event) => event.docs);
+    final doc = _firestore
+        .collection("tweets")
+        .orderBy("datePublished", descending: true)
+        .snapshots()
+        .map((event) => event.docs);
     return doc;
   }
 }
