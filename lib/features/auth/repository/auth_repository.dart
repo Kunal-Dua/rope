@@ -47,10 +47,12 @@ class AuthRepository {
       UserCredential currentUser = await _auth.signInWithCredential(credential);
       if (currentUser.additionalUserInfo!.isNewUser) {
         userModel = UserModel(
-            uid: currentUser.user!.uid,
-            name: currentUser.user!.displayName!,
-            email: currentUser.user!.email!,
-            profileUrl: currentUser.user!.photoURL!);
+          uid: currentUser.user!.uid,
+          name: currentUser.user!.displayName!,
+          email: currentUser.user!.email!,
+          profileUrl: currentUser.user!.photoURL!,
+          bio: '',
+        );
 
         await _users.doc(currentUser.user!.uid).set(userModel.toMap());
       } else {
@@ -65,5 +67,16 @@ class AuthRepository {
   Stream<UserModel> getUserData(String uid) {
     return _users.doc(uid).snapshots().map(
         (event) => UserModel.fromMap(event.data() as Map<String, dynamic>));
+  }
+
+  Future<List<UserModel>> getUserByName(String name) async {
+    final document = await _users
+        .where('name', isGreaterThanOrEqualTo: name)
+        .where('name', isLessThan: name + 'z')
+        .get();
+
+    return document.docs
+        .map((doc) => UserModel.fromMap(doc.data() as Map<String, dynamic>))
+        .toList();
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rope/features/auth/controller/auth_controller.dart';
+import 'package:rope/features/search/screens/search_screen.dart';
 import 'package:rope/features/tweet/screens/create_tweet_screen.dart';
 import 'package:rope/features/tweet/widgets/list_tweet.dart';
 import 'package:rope/theme/pallete.dart';
@@ -28,7 +29,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         index: _page,
         children: const [
           ListTweet(),
-          Text("Search "),
+          SearchScreen(),
           Text("Notifications"),
         ],
       ),
