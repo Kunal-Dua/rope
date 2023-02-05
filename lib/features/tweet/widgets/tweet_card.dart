@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:like_button/like_button.dart';
 import 'package:rope/core/common/error_page.dart';
 import 'package:rope/core/common/loading_page.dart';
+import 'package:rope/core/constants/constants.dart';
 import 'package:rope/core/enums/tweet_type_enums.dart';
 import 'package:rope/features/auth/controller/auth_controller.dart';
 import 'package:rope/features/tweet/controller/tweet_controller.dart';
@@ -41,6 +42,23 @@ class TweetCard extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              if (tweet.retweetedBy.isNotEmpty)
+                                Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      Constants.svgRetweetIcon,
+                                      color: Pallete.greyColor,
+                                      height: 20,
+                                    ),
+                                    Text(
+                                      ' ${tweet.retweetedBy} reroped',
+                                      style: const TextStyle(
+                                          color: Pallete.greyColor,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
+                                ),
                               Row(
                                 children: [
                                   Container(
@@ -55,7 +73,7 @@ class TweetCard extends ConsumerWidget {
                                   ),
                                   Container(
                                     child: Text(
-                                      ' @${user.name} ${timeago.format(
+                                      ' @${user.name} · ${timeago.format(
                                         tweet.datePublished,
                                       )}',
                                       style: const TextStyle(
@@ -84,7 +102,7 @@ class TweetCard extends ConsumerWidget {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     TweetIconButton(
-                                      pathName: "assets/svgs/views.svg",
+                                      pathName: Constants.svgViewIcon,
                                       text: (tweet.commentIds.length +
                                               tweet.reshareCount +
                                               tweet.likes.length)
@@ -92,14 +110,23 @@ class TweetCard extends ConsumerWidget {
                                       onTap: () {},
                                     ),
                                     TweetIconButton(
-                                      pathName: "assets/svgs/comment.svg",
+                                      pathName: Constants.svgCommentIcon,
                                       text: tweet.commentIds.length.toString(),
                                       onTap: () {},
                                     ),
                                     TweetIconButton(
-                                      pathName: "assets/svgs/retweet.svg",
+                                      pathName: Constants.svgRetweetIcon,
                                       text: tweet.reshareCount.toString(),
-                                      onTap: () {},
+                                      onTap: () {
+                                        ref
+                                            .read(tweetControllerProvider
+                                                .notifier)
+                                            .reshareTweet(
+                                              tweet,
+                                              currentUser,
+                                              context,
+                                            );
+                                      },
                                     ),
                                     LikeButton(
                                       onTap: (isLiked) async {
@@ -115,11 +142,11 @@ class TweetCard extends ConsumerWidget {
                                       likeBuilder: (isLiked) {
                                         return isLiked
                                             ? SvgPicture.asset(
-                                                "assets/svgs/like_filled.svg",
+                                                Constants.svgLikeFilled,
                                                 color: Pallete.redColor,
                                               )
                                             : SvgPicture.asset(
-                                                "assets/svgs/like_outlined.svg",
+                                                Constants.svgLikeOutLined,
                                                 color: Pallete.greyColor,
                                               );
                                       },

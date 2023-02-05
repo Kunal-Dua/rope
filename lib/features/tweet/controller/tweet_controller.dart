@@ -68,6 +68,34 @@ class TweetController extends StateNotifier<bool> {
     }
   }
 
+  void reshareTweet(
+    TweetModel tweet,
+    UserModel currentUser,
+    BuildContext context,
+  ) async {
+    try {
+      tweet = tweet.copyWith(
+        reshareCount: tweet.reshareCount + 1,
+      );
+      final res = await _tweetRepository.updateReshareCount(tweet);
+      res.fold((l) => showSnackBar(context, l.message), (r) async {
+        String newId = const Uuid().v1();
+        tweet = tweet.copyWith(
+          id: newId,
+          likes: [],
+          commentIds: [],
+          retweetedBy: currentUser.name,
+          reshareCount: 0,
+        );
+
+        final res2 = await _tweetRepository.shareTweet(tweet);
+        res2.fold((l) => showSnackBar(context, l.message), (r) => null);
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   void shareTweet({
     required List<File> images,
     required String text,
@@ -98,17 +126,19 @@ class TweetController extends StateNotifier<bool> {
         await _storageRepository.uploadImage(images: images, uid: user.uid);
     String newId = Uuid().v1();
     TweetModel tweet = TweetModel(
-        uid: user.uid,
-        text: text,
-        link: link,
-        hashtags: hashtags,
-        imageLinks: imageLinks,
-        tweetType: TweetType.image,
-        datePublished: DateTime.now(),
-        likes: [],
-        commentIds: [],
-        id: newId,
-        reshareCount: 0);
+      uid: user.uid,
+      text: text,
+      link: link,
+      hashtags: hashtags,
+      imageLinks: imageLinks,
+      tweetType: TweetType.image,
+      datePublished: DateTime.now(),
+      likes: [],
+      commentIds: [],
+      id: newId,
+      reshareCount: 0,
+      retweetedBy: '',
+    );
 
     final res = await _tweetRepository.shareTweet(tweet);
     state = false;
@@ -125,17 +155,19 @@ class TweetController extends StateNotifier<bool> {
     final user = _ref.read(userProvider)!;
     String newId = Uuid().v1();
     TweetModel tweet = TweetModel(
-        uid: user.uid,
-        text: text,
-        link: link,
-        hashtags: hashtags,
-        imageLinks: [],
-        tweetType: TweetType.text,
-        datePublished: DateTime.now(),
-        likes: [],
-        commentIds: [],
-        id: newId,
-        reshareCount: 0);
+      uid: user.uid,
+      text: text,
+      link: link,
+      hashtags: hashtags,
+      imageLinks: [],
+      tweetType: TweetType.text,
+      datePublished: DateTime.now(),
+      likes: [],
+      commentIds: [],
+      id: newId,
+      reshareCount: 0,
+      retweetedBy: '',
+    );
 
     final res = await _tweetRepository.shareTweet(tweet);
     state = false;

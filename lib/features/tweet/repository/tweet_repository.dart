@@ -61,4 +61,15 @@ class TweetRepository {
       return print(e.toString());
     }
   }
+
+  FutureEither<void> updateReshareCount(TweetModel tweet) async {
+    try {
+      final document = _firestore.collection("tweets").doc(tweet.id).update({
+        "reshareCount": tweet.reshareCount,
+      });
+      return right(document);
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
 }

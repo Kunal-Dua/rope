@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:rope/core/enums/tweet_type_enums.dart';
 
 class TweetModel {
@@ -15,6 +14,7 @@ class TweetModel {
   final List<String> commentIds;
   final String id;
   final int reshareCount;
+  final String retweetedBy;
   TweetModel({
     required this.uid,
     required this.text,
@@ -27,6 +27,7 @@ class TweetModel {
     required this.commentIds,
     required this.id,
     required this.reshareCount,
+    required this.retweetedBy,
   });
 
   TweetModel copyWith({
@@ -41,6 +42,7 @@ class TweetModel {
     List<String>? commentIds,
     String? id,
     int? reshareCount,
+    String? retweetedBy,
   }) {
     return TweetModel(
       uid: uid ?? this.uid,
@@ -54,6 +56,7 @@ class TweetModel {
       commentIds: commentIds ?? this.commentIds,
       id: id ?? this.id,
       reshareCount: reshareCount ?? this.reshareCount,
+      retweetedBy: retweetedBy ?? this.retweetedBy,
     );
   }
 
@@ -70,6 +73,7 @@ class TweetModel {
       'id': id,
       'commentIds': commentIds,
       'reshareCount': reshareCount,
+      'retweetedBy': retweetedBy,
     };
   }
 
@@ -86,6 +90,7 @@ class TweetModel {
       commentIds: List<String>.from(map['commentIds']),
       id: map['id'] as String,
       reshareCount: map['reshareCount'] as int,
+      retweetedBy: map['retweetedBy'] as String,
     );
   }
 
@@ -96,38 +101,6 @@ class TweetModel {
 
   @override
   String toString() {
-    return 'TweetModel(uid: $uid, text: $text, link: $link, hashtags: $hashtags, imageLinks: $imageLinks, tweetType: $tweetType, datePublished: $datePublished, likes: $likes, commentIds: $commentIds, id: $id, reshareCount: $reshareCount)';
-  }
-
-  @override
-  bool operator ==(covariant TweetModel other) {
-    if (identical(this, other)) return true;
-
-    return other.uid == uid &&
-        other.text == text &&
-        other.link == link &&
-        listEquals(other.hashtags, hashtags) &&
-        listEquals(other.imageLinks, imageLinks) &&
-        other.tweetType == tweetType &&
-        other.datePublished == datePublished &&
-        listEquals(other.likes, likes) &&
-        listEquals(other.commentIds, commentIds) &&
-        other.id == id &&
-        other.reshareCount == reshareCount;
-  }
-
-  @override
-  int get hashCode {
-    return uid.hashCode ^
-        text.hashCode ^
-        link.hashCode ^
-        hashtags.hashCode ^
-        imageLinks.hashCode ^
-        tweetType.hashCode ^
-        datePublished.hashCode ^
-        likes.hashCode ^
-        commentIds.hashCode ^
-        id.hashCode ^
-        reshareCount.hashCode;
+    return 'TweetModel(uid: $uid, text: $text, link: $link, hashtags: $hashtags, imageLinks: $imageLinks, tweetType: $tweetType, datePublished: $datePublished, likes: $likes, commentIds: $commentIds, id: $id, reshareCount: $reshareCount,retweetedBy: $retweetedBy)';
   }
 }
