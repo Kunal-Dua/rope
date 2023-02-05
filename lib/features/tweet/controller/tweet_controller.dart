@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,6 +12,8 @@ import 'package:uuid/uuid.dart';
 
 final tweetControllerProvider =
     StateNotifierProvider<TweetController, bool>((ref) {
+  final tweetRepository = ref.watch(tweetProvider);
+
   return TweetController(
     ref: ref,
     tweetRepository: ref.watch(tweetProvider),
@@ -25,13 +26,22 @@ final getTweetsProvider = FutureProvider((ref) {
   return tweetController.getTweets();
 });
 
-// Stream<List<TweetModel>> getUpdatedTweets() {
-//   return tweetRepository.getUpdatedTweet();
-// }
-
-final getUpdatedTweetsProvider = StreamProvider<List<TweetModel>>((ref) {
+final getUpdatedTweetsProvider =
+    StreamProvider.autoDispose<List<TweetModel>>((ref) {
   final tweet = ref.watch(tweetProvider);
   return tweet.getUpdatedTweet();
+});
+
+final getRepliedTweets = StreamProvider.family
+    .autoDispose<List<TweetModel>, TweetModel>((ref, tweet) {
+  final doc = ref.watch(tweetProvider);
+  return doc.getRepliesFromTweet(tweet);
+});
+
+final getTweetByIdProvider =
+    FutureProvider.family((ref, String id) {
+  final doc = ref.watch(tweetProvider);
+  return doc.getTweetById(id);
 });
 
 class TweetController extends StateNotifier<bool> {
@@ -100,15 +110,25 @@ class TweetController extends StateNotifier<bool> {
     required List<File> images,
     required String text,
     required BuildContext context,
+    required String repliedTo,
   }) {
     if (text.isEmpty) {
       showSnackBar(context, "Enter text");
       return;
     }
     if (images.isNotEmpty) {
-      _shareImageTweet(images: images, text: text, context: context);
+      _shareImageTweet(
+        images: images,
+        text: text,
+        context: context,
+        repliedTo: repliedTo,
+      );
     } else {
-      _shareTextTweet(text: text, context: context);
+      _shareTextTweet(
+        text: text,
+        context: context,
+        repliedTo: repliedTo,
+      );
     }
   }
 
@@ -116,6 +136,7 @@ class TweetController extends StateNotifier<bool> {
     required List<File> images,
     required String text,
     required BuildContext context,
+    required String repliedTo,
   }) async {
     state = true;
     String link = _getLinkFromText(text);
@@ -124,7 +145,7 @@ class TweetController extends StateNotifier<bool> {
 
     final imageLinks =
         await _storageRepository.uploadImage(images: images, uid: user.uid);
-    String newId = Uuid().v1();
+    String newId = const Uuid().v1();
     TweetModel tweet = TweetModel(
       uid: user.uid,
       text: text,
@@ -133,11 +154,12 @@ class TweetController extends StateNotifier<bool> {
       imageLinks: imageLinks,
       tweetType: TweetType.image,
       datePublished: DateTime.now(),
-      likes: [],
-      commentIds: [],
+      likes: const [],
+      commentIds: const [],
       id: newId,
       reshareCount: 0,
       retweetedBy: '',
+      repliedTo: repliedTo,
     );
 
     final res = await _tweetRepository.shareTweet(tweet);
@@ -148,25 +170,27 @@ class TweetController extends StateNotifier<bool> {
   void _shareTextTweet({
     required String text,
     required BuildContext context,
+    required String repliedTo,
   }) async {
     state = true;
     final hashtags = _getHashtagFromText(text);
     String link = _getLinkFromText(text);
     final user = _ref.read(userProvider)!;
-    String newId = Uuid().v1();
+    String newId = const Uuid().v1();
     TweetModel tweet = TweetModel(
       uid: user.uid,
       text: text,
       link: link,
       hashtags: hashtags,
-      imageLinks: [],
+      imageLinks: const [],
       tweetType: TweetType.text,
       datePublished: DateTime.now(),
-      likes: [],
-      commentIds: [],
+      likes: const [],
+      commentIds: const [],
       id: newId,
       reshareCount: 0,
       retweetedBy: '',
+      repliedTo: repliedTo,
     );
 
     final res = await _tweetRepository.shareTweet(tweet);

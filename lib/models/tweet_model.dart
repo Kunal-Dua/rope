@@ -1,7 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:rope/core/enums/tweet_type_enums.dart';
 
+@immutable
 class TweetModel {
   final String uid;
   final String text;
@@ -15,6 +17,7 @@ class TweetModel {
   final String id;
   final int reshareCount;
   final String retweetedBy;
+  final String repliedTo;
   TweetModel({
     required this.uid,
     required this.text,
@@ -28,6 +31,7 @@ class TweetModel {
     required this.id,
     required this.reshareCount,
     required this.retweetedBy,
+    required this.repliedTo,
   });
 
   TweetModel copyWith({
@@ -43,6 +47,7 @@ class TweetModel {
     String? id,
     int? reshareCount,
     String? retweetedBy,
+    String? repliedTo,
   }) {
     return TweetModel(
       uid: uid ?? this.uid,
@@ -57,6 +62,7 @@ class TweetModel {
       id: id ?? this.id,
       reshareCount: reshareCount ?? this.reshareCount,
       retweetedBy: retweetedBy ?? this.retweetedBy,
+      repliedTo: repliedTo ?? this.repliedTo,
     );
   }
 
@@ -74,6 +80,7 @@ class TweetModel {
       'commentIds': commentIds,
       'reshareCount': reshareCount,
       'retweetedBy': retweetedBy,
+      'repliedTo': repliedTo,
     };
   }
 
@@ -91,6 +98,7 @@ class TweetModel {
       id: map['id'] as String,
       reshareCount: map['reshareCount'] as int,
       retweetedBy: map['retweetedBy'] as String,
+      repliedTo: map['repliedTo'] as String,
     );
   }
 
@@ -101,6 +109,6 @@ class TweetModel {
 
   @override
   String toString() {
-    return 'TweetModel(uid: $uid, text: $text, link: $link, hashtags: $hashtags, imageLinks: $imageLinks, tweetType: $tweetType, datePublished: $datePublished, likes: $likes, commentIds: $commentIds, id: $id, reshareCount: $reshareCount,retweetedBy: $retweetedBy)';
+    return 'TweetModel(uid: $uid, text: $text, link: $link, hashtags: $hashtags, imageLinks: $imageLinks, tweetType: $tweetType, datePublished: $datePublished, likes: $likes, commentIds: $commentIds, id: $id, reshareCount: $reshareCount,retweetedBy: $retweetedBy,retweetedBy: $repliedTo)';
   }
 }

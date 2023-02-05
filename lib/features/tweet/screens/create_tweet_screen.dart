@@ -26,6 +26,7 @@ class _CreateTweetScreenState extends ConsumerState<CreateTweetScreen> {
           images: images,
           text: textEditingController.text,
           context: context,
+          repliedTo: '',
         );
     textEditingController.text = "";
     images = [];

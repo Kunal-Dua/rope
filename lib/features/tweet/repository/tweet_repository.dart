@@ -52,13 +52,14 @@ class TweetRepository {
     });
   }
 
-  Future likeTweet(TweetModel tweet) async {
+  FutureEither<void> likeTweet(TweetModel tweet) async {
     try {
       final document = _firestore.collection("tweets").doc(tweet.id).update({
         "likes": tweet.likes,
       });
+      return right(document);
     } catch (e) {
-      return print(e.toString());
+      return left(Failure(e.toString()));
     }
   }
 
@@ -71,5 +72,25 @@ class TweetRepository {
     } catch (e) {
       return left(Failure(e.toString()));
     }
+  }
+
+  Stream<List<TweetModel>> getRepliesFromTweet(TweetModel tweet) {
+    return _firestore
+        .collection("tweets")
+        .where('repliedTo', isEqualTo: tweet.id)
+        .snapshots()
+        .map((event) {
+      List<TweetModel> doc = [];
+      for (var document in event.docs) {
+        doc.add(TweetModel.fromMap(document.data()));
+      }
+      return doc;
+    });
+  }
+
+  Future<TweetModel> getTweetById(String id) async {
+    final doc = await _firestore.collection("tweets").doc(id).get();
+    final document = doc.data() as Map<String, dynamic>;
+    return TweetModel.fromMap(document);
   }
 }
