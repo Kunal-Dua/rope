@@ -93,4 +93,18 @@ class TweetRepository {
     final document = doc.data() as Map<String, dynamic>;
     return TweetModel.fromMap(document);
   }
+
+  Stream<List<TweetModel>> getUserTweets(String uid) {
+    return _firestore
+        .collection("tweets")
+        .where('uid', isEqualTo: uid)
+        .snapshots()
+        .map((event) {
+      List<TweetModel> doc = [];
+      for (var document in event.docs) {
+        doc.add(TweetModel.fromMap(document.data()));
+      }
+      return doc;
+    });
+  }
 }

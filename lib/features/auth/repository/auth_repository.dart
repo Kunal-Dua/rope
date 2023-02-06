@@ -52,6 +52,10 @@ class AuthRepository {
           email: currentUser.user!.email!,
           profileUrl: currentUser.user!.photoURL!,
           bio: '',
+          bannerPic: '',
+          followers: [],
+          following: [],
+          isTwitterBlue: false,
         );
 
         await _users.doc(currentUser.user!.uid).set(userModel.toMap());

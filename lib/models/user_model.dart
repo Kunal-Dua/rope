@@ -4,12 +4,20 @@ class UserModel {
   final String email;
   final String profileUrl;
   final String bio;
+  final String bannerPic;
+  final List<String> followers;
+  final List<String> following;
+  final bool isTwitterBlue;
   UserModel({
     required this.uid,
     required this.name,
     required this.email,
     required this.profileUrl,
     required this.bio,
+    required this.isTwitterBlue,
+    required this.bannerPic,
+    required this.followers,
+    required this.following,
   });
 
   UserModel copyWith({
@@ -18,6 +26,10 @@ class UserModel {
     String? email,
     String? profileUrl,
     String? bio,
+    bool? isTwitterBlue,
+    String? bannerPic,
+    List<String>? followers,
+    List<String>? following,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
@@ -25,6 +37,10 @@ class UserModel {
       email: email ?? this.email,
       profileUrl: profileUrl ?? this.profileUrl,
       bio: bio ?? this.bio,
+      isTwitterBlue: isTwitterBlue ?? this.isTwitterBlue,
+      bannerPic: bannerPic ?? this.bannerPic,
+      followers: followers ?? this.followers,
+      following: following ?? this.following,
     );
   }
 
@@ -35,6 +51,10 @@ class UserModel {
       'email': email,
       'profileUrl': profileUrl,
       'bio': bio,
+      'bannerPic': bannerPic,
+      'followers': followers,
+      'following': following,
+      'isTwitterBlue': isTwitterBlue,
     };
   }
 
@@ -43,8 +63,12 @@ class UserModel {
       uid: map['uid'] as String,
       name: map['name'] as String,
       email: map['email'] as String,
-      profileUrl: map['profileUrl'] as String,
-      bio: map['bio'] as String,
+      profileUrl: map['profileUrl'] ?? '',
+      bio: map['bio'] ?? '',
+      bannerPic: map['bannerPic'] ?? '',
+      followers: List<String>.from(map['followers']),
+      following: List<String>.from(map['following']),
+      isTwitterBlue: map['isTwitterBlue'] ?? '',
     );
   }
 }

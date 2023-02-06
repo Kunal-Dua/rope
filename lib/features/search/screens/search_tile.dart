@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rope/features/user_profile/screens/user_profile_screen.dart';
 import 'package:rope/models/user_model.dart';
 import 'package:rope/theme/pallete.dart';
 
@@ -10,6 +11,13 @@ class SearchTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ListTile(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => UserProfileScreen(user: user)),
+        );
+      },
       leading: CircleAvatar(
         backgroundImage: NetworkImage(user.profileUrl),
         radius: 30,

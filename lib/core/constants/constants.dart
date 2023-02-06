@@ -7,4 +7,5 @@ class Constants {
   static const svgViewIcon = "assets/svgs/views.svg";
   static const svgLikeFilled = "assets/svgs/like_filled.svg";
   static const svgLikeOutLined = "assets/svgs/like_outlined.svg";
+  static const svgVerifiedIcon = "assets/svgs/verified.svg";
 }
