@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rope/core/constants/constants.dart';
 import 'package:rope/core/failure.dart';
 import 'package:rope/core/providers/firebase_provider.dart';
+import 'package:rope/core/type_def.dart';
 import 'package:rope/models/user_model.dart';
 
 final authRepositoryProvider = Provider(
@@ -60,7 +61,7 @@ class AuthRepository {
 
         await _users.doc(currentUser.user!.uid).set(userModel.toMap());
       } else {
-        userModel = await getUserData(currentUser.user!.uid).first;
+        userModel = await getUserData(currentUser.user!.uid);
       }
       return right(userModel);
     } catch (e) {
@@ -68,19 +69,70 @@ class AuthRepository {
     }
   }
 
-  Stream<UserModel> getUserData(String uid) {
-    return _users.doc(uid).snapshots().map(
-        (event) => UserModel.fromMap(event.data() as Map<String, dynamic>));
+  Future<UserModel> getUserData(String uid) async {
+    final document = await _users.doc(uid).get();
+    return UserModel.fromMap(document.data() as Map<String, dynamic>);
   }
 
   Future<List<UserModel>> getUserByName(String name) async {
-    final document = await _users
-        .where('name', isGreaterThanOrEqualTo: name)
-        .where('name', isLessThan: name + 'z')
-        .get();
+    final document =
+        await _users.where('name', isLessThanOrEqualTo: name + 'z').get();
 
     return document.docs
         .map((doc) => UserModel.fromMap(doc.data() as Map<String, dynamic>))
         .toList();
+  }
+
+  FutureEither<void> updateUserProfilePic(
+      {required UserModel userModel, required String profileUrl}) async {
+    try {
+      final doc = await _users.doc(userModel.uid).update({
+        "profileUrl": profileUrl,
+      });
+      return right(doc);
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureEither<void> updateUserBannerPic(
+      {required UserModel userModel, required String bannerPic}) async {
+    try {
+      final doc = await _users.doc(userModel.uid).update({
+        "bannerPic": bannerPic,
+      });
+      return right(doc);
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureEither<void> updateUserProfileName(
+      {required UserModel userModel, required String name}) async {
+    try {
+      final doc = await _users.doc(userModel.uid).update({
+        "name": name,
+      });
+      return right(doc);
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureEither<void> updateUserProfileBio(
+      {required UserModel userModel, required String bio}) async {
+    try {
+      final doc = await _users.doc(userModel.uid).update({
+        "bio": bio,
+      });
+      return right(doc);
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  Stream<UserModel> getUpdatedUserProfileData(String uid) {
+    return _users.doc(uid).snapshots().map(
+        (event) => UserModel.fromMap(event.data() as Map<String, dynamic>));
   }
 }

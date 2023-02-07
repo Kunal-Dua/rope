@@ -32,10 +32,8 @@ class MyApp extends ConsumerStatefulWidget {
 class _MyAppState extends ConsumerState<MyApp> {
   UserModel? userModel;
   void getData(WidgetRef ref, User data) async {
-    userModel = await ref
-        .watch(authControllerProvider.notifier)
-        .getUserData(data.uid)
-        .first;
+    userModel =
+        await ref.watch(authControllerProvider.notifier).getUserData(data.uid);
 
     ref.read(userProvider.notifier).update((state) => userModel);
     setState(() {});
@@ -62,6 +60,6 @@ class _MyAppState extends ConsumerState<MyApp> {
               routeInformationParser: const RoutemasterParser(),
             ),
         error: (error, StackTrace) => Text(error.toString()),
-        loading: () => CircularProgressIndicator());
+        loading: () => const CircularProgressIndicator());
   }
 }

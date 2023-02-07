@@ -13,6 +13,7 @@ import 'package:rope/features/tweet/screens/reply_tweet_screen.dart';
 import 'package:rope/features/tweet/widgets/carousel_image.dart';
 import 'package:rope/features/tweet/widgets/hashtags_text.dart';
 import 'package:rope/features/tweet/widgets/tweet_icon_button.dart';
+import 'package:rope/features/user_profile/screens/user_profile_screen.dart';
 import 'package:rope/models/tweet_model.dart';
 import 'package:rope/theme/pallete.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -42,11 +43,22 @@ class TweetCard extends ConsumerWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            margin: const EdgeInsets.all(10),
-                            child: CircleAvatar(
-                              backgroundImage: NetworkImage(user.profileUrl),
-                              radius: 35,
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      UserProfileScreen(userModel: user),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.all(10),
+                              child: CircleAvatar(
+                                backgroundImage: NetworkImage(user.profileUrl),
+                                radius: 35,
+                              ),
                             ),
                           ),
                           Expanded(
@@ -73,7 +85,7 @@ class TweetCard extends ConsumerWidget {
                                 Row(
                                   children: [
                                     Container(
-                                      // margin: const EdgeInsets.all(5),
+                                      margin: const EdgeInsets.all(0),
                                       child: Text(
                                         user.name,
                                         style: const TextStyle(
@@ -83,6 +95,7 @@ class TweetCard extends ConsumerWidget {
                                       ),
                                     ),
                                     Container(
+                                      margin: const EdgeInsets.all(0),
                                       child: Text(
                                         ' @${user.name} · ${timeago.format(
                                           tweet.datePublished,

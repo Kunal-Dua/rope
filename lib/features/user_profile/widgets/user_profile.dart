@@ -7,6 +7,7 @@ import 'package:rope/core/constants/constants.dart';
 import 'package:rope/features/auth/controller/auth_controller.dart';
 import 'package:rope/features/tweet/widgets/tweet_card.dart';
 import 'package:rope/features/user_profile/controller/user_profile_controller.dart';
+import 'package:rope/features/user_profile/screens/edit_profile_screen.dart';
 import 'package:rope/features/user_profile/widgets/follow_count.dart';
 import 'package:rope/models/user_model.dart';
 import 'package:rope/theme/pallete.dart';
@@ -44,7 +45,8 @@ class UserProfile extends ConsumerWidget {
                               ),
                       ),
                       Positioned(
-                        bottom: 0,
+                        bottom: 10,
+                        left: 10,
                         child: CircleAvatar(
                           backgroundImage: NetworkImage(user.profileUrl),
                           radius: 45,
@@ -54,7 +56,15 @@ class UserProfile extends ConsumerWidget {
                         alignment: Alignment.bottomRight,
                         margin: const EdgeInsets.all(20),
                         child: OutlinedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            if (currentUser.uid == user.uid) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const EditProfile()),
+                              );
+                            }
+                          },
                           style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
