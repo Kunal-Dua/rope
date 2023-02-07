@@ -63,6 +63,14 @@ class UserProfile extends ConsumerWidget {
                                 MaterialPageRoute(
                                     builder: (context) => const EditProfile()),
                               );
+                            } else {
+                              ref
+                                  .read(userProfileControllerProvider.notifier)
+                                  .followUser(
+                                    context,
+                                    user,
+                                    currentUser,
+                                  );
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -75,7 +83,9 @@ class UserProfile extends ConsumerWidget {
                           child: Text(
                             currentUser.uid == user.uid
                                 ? "Edit Profile"
-                                : "Follow",
+                                : currentUser.followers.contains(user.uid)
+                                    ? "Unfollow"
+                                    : "Follow",
                             style: const TextStyle(
                               color: Pallete.whiteColor,
                             ),

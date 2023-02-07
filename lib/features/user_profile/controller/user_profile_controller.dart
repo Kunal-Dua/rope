@@ -92,4 +92,27 @@ class UserProfileController extends StateNotifier<bool> {
       res.fold((l) => showSnackBar(context, l.message), (r) => null);
     }
   }
+
+  void followUser(
+    BuildContext context,
+    UserModel user,
+    UserModel currentUser,
+  ) async {
+    if (currentUser.followers.contains(user.uid)) {
+      user.followers.remove(currentUser.uid);
+      currentUser.following.remove(user.uid);
+    } else {
+      user.followers.add(currentUser.uid);
+      currentUser.following.add(user.uid);
+    }
+
+    user = user.copyWith(followers: user.followers);
+    currentUser = currentUser.copyWith(following: currentUser.following);
+
+    final res = await _authRepository.addToFollowers(user: user);
+    res.fold((l) => showSnackBar(context, l.message), (r) async {
+      final res2 = await _authRepository.addToFollowing(user: currentUser);
+      res2.fold((l) => showSnackBar(context, l.message), (r) => null);
+    });
+  }
 }

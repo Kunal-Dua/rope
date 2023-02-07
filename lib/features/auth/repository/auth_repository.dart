@@ -135,4 +135,26 @@ class AuthRepository {
     return _users.doc(uid).snapshots().map(
         (event) => UserModel.fromMap(event.data() as Map<String, dynamic>));
   }
+
+  FutureEither<void> addToFollowers({required UserModel user}) async {
+    try {
+      final doc = await _users.doc(user.uid).update({
+        "followers": user.followers,
+      });
+      return right(doc);
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureEither<void> addToFollowing({required UserModel user}) async {
+    try {
+      final doc = await _users.doc(user.uid).update({
+        "following": user.following,
+      });
+      return right(doc);
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
 }

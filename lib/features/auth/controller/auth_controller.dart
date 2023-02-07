@@ -51,6 +51,8 @@ class AuthController extends StateNotifier<bool> {
         (r) => _ref.read(userProvider.notifier).update((state) => r));
   }
 
+  
+
   Future<UserModel> getUserData(String uid) {
     return _authRepository.getUserData(uid);
   }
