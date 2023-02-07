@@ -203,7 +203,15 @@ class TweetCard extends ConsumerWidget {
                                         pathName: Constants.svgCommentIcon,
                                         text:
                                             tweet.commentIds.length.toString(),
-                                        onTap: () {},
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ReplyScreen(tweet: tweet),
+                                            ),
+                                          );
+                                        },
                                       ),
                                       TweetIconButton(
                                         pathName: Constants.svgRetweetIcon,

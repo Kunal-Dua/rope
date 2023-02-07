@@ -5,6 +5,7 @@ import 'package:rope/core/common/loading_page.dart';
 import 'package:rope/features/tweet/controller/tweet_controller.dart';
 import 'package:rope/features/tweet/widgets/tweet_card.dart';
 import 'package:rope/models/tweet_model.dart';
+import 'package:uuid/uuid.dart';
 
 class ReplyScreen extends ConsumerWidget {
   final TweetModel tweet;
@@ -39,12 +40,19 @@ class ReplyScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(12),
         child: TextField(
           onSubmitted: (value) {
+            final tweetID = const Uuid().v1();
             ref.read(tweetControllerProvider.notifier).shareTweet(
               images: [],
               text: value,
               context: context,
               repliedTo: tweet.id,
+              tweetID: tweetID,
             );
+
+            ref
+                .read(tweetControllerProvider.notifier)
+                .updateCommentIdsAfterReply(tweet: tweet, commentId: tweetID);
+
             value = '';
           },
           decoration: const InputDecoration(

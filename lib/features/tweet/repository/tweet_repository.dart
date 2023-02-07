@@ -107,4 +107,15 @@ class TweetRepository {
       return doc;
     });
   }
+
+  FutureEither<void> updateCommentIdsOfRepliedTweet(TweetModel tweet) async {
+    try {
+      final doc = await _firestore.collection("tweets").doc(tweet.id).update({
+        "commentIds": tweet.commentIds,
+      });
+      return right(doc);
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
 }

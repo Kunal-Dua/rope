@@ -77,6 +77,19 @@ class TweetController extends StateNotifier<bool> {
     }
   }
 
+  void updateCommentIdsAfterReply(
+      {required TweetModel tweet, required String commentId}) async {
+    try {
+      List<String> commentIds = tweet.commentIds;
+      commentIds.add(commentId);
+
+      tweet = tweet.copyWith(commentIds: commentIds);
+      await _tweetRepository.updateCommentIdsOfRepliedTweet(tweet);
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   void reshareTweet(
     TweetModel tweet,
     UserModel currentUser,
@@ -110,6 +123,7 @@ class TweetController extends StateNotifier<bool> {
     required String text,
     required BuildContext context,
     required String repliedTo,
+    String? tweetID,
   }) {
     if (text.isEmpty) {
       showSnackBar(context, "Enter text");
@@ -127,6 +141,7 @@ class TweetController extends StateNotifier<bool> {
         text: text,
         context: context,
         repliedTo: repliedTo,
+        tweetID: tweetID,
       );
     }
   }
@@ -169,12 +184,16 @@ class TweetController extends StateNotifier<bool> {
     required String text,
     required BuildContext context,
     required String repliedTo,
+    String? tweetID,
   }) async {
     state = true;
     final hashtags = _getHashtagFromText(text);
     String link = _getLinkFromText(text);
     final user = _ref.read(userProvider)!;
-    String newId = const Uuid().v1();
+    if (tweetID != null) {
+    } else {
+      tweetID = const Uuid().v1();
+    }
     TweetModel tweet = TweetModel(
       uid: user.uid,
       text: text,
@@ -185,7 +204,7 @@ class TweetController extends StateNotifier<bool> {
       datePublished: DateTime.now(),
       likes: const [],
       commentIds: const [],
-      id: newId,
+      id: tweetID,
       reshareCount: 0,
       retweetedBy: '',
       repliedTo: repliedTo,
