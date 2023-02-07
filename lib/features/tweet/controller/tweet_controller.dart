@@ -38,8 +38,7 @@ final getRepliedTweets = StreamProvider.family
   return doc.getRepliesFromTweet(tweet);
 });
 
-final getTweetByIdProvider =
-    FutureProvider.family((ref, String id) {
+final getTweetByIdProvider = FutureProvider.family((ref, String id) {
   final doc = ref.watch(tweetProvider);
   return doc.getTweetById(id);
 });
@@ -143,8 +142,7 @@ class TweetController extends StateNotifier<bool> {
     final hashtags = _getHashtagFromText(text);
     final user = _ref.read(userProvider)!;
 
-    final imageLinks =
-        await _storageRepository.uploadImage(images: images, uid: user.uid);
+    final imageLinks = await _storageRepository.uploadImage(images: images);
     String newId = const Uuid().v1();
     TweetModel tweet = TweetModel(
       uid: user.uid,

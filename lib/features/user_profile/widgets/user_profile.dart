@@ -67,9 +67,9 @@ class UserProfile extends ConsumerWidget {
                               ref
                                   .read(userProfileControllerProvider.notifier)
                                   .followUser(
-                                    context,
-                                    user,
-                                    currentUser,
+                                    context: context,
+                                    user: user,
+                                    currentUser: currentUser,
                                   );
                             }
                           },
@@ -83,7 +83,7 @@ class UserProfile extends ConsumerWidget {
                           child: Text(
                             currentUser.uid == user.uid
                                 ? "Edit Profile"
-                                : currentUser.followers.contains(user.uid)
+                                : currentUser.following.contains(user.uid)
                                     ? "Unfollow"
                                     : "Follow",
                             style: const TextStyle(

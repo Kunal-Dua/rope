@@ -1,8 +1,13 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rope/core/constants/constants.dart';
+import 'package:rope/core/utils.dart';
+import 'package:rope/features/auth/controller/auth_controller.dart';
 import 'package:rope/features/auth/screen/login_screen.dart';
 import 'package:rope/features/auth/widget/auth_field.dart';
 import 'package:rope/features/auth/widget/button.dart';
+import 'package:rope/theme/pallete.dart';
 
 class SignupView extends ConsumerStatefulWidget {
   const SignupView({super.key});
@@ -14,47 +19,123 @@ class SignupView extends ConsumerStatefulWidget {
 class _SignupViewState extends ConsumerState<SignupView> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _bioController = TextEditingController();
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _nameController.dispose();
+    _bioController.dispose();
     super.dispose();
   }
 
-  void signup() async {
-    // String res = await AuthMethods().signUpUser(
-    //   email: _emailController.text,
-    //   password: _passwordController.text,
-    // );
-    // print(res);
+  File? profileFile;
+  File? bannerFile;
+
+  void selectBannerImage() async {
+    final banner = await pickImage();
+    if (banner != null) {
+      setState(() {
+        bannerFile = banner;
+      });
+    }
   }
 
-  // void logIn() async {
+  void selectProfileImage() async {
+    final img = await pickImage();
+    if (img != null) {
+      setState(() {
+        profileFile = img;
+      });
+    }
+  }
+
+  void signup() async {
+    if (profileFile == null) {
+      showSnackBar(context, "Select Profil");
+    }
+    ref.read(authControllerProvider.notifier).signInWithEmailAndPassword(
+        context: context,
+        email: _emailController.text,
+        name: _nameController.text,
+        bio: _bioController.text,
+        password: _passwordController.text,
+        profileFile: profileFile,
+        bannerFile: bannerFile);
+  }
+
   @override
   Widget build(BuildContext context) {
-    var platform = Theme.of(context).platform;
+    // var platform = Theme.of(context).platform;
     // SystemChrome.setSystemUIOverlayStyle(
     //   const SystemUiOverlayStyle(
     //     statusBarColor: Colors.black,
     //     statusBarBrightness: Brightness.light,
     //   ),
     // );
+
     return Scaffold(
-      // resizeToAvoidBottomInset: false,
-      // backgroundColor: Colors.grey[200],
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Center(
           child: Form(
             child: Column(
               children: [
-                const SizedBox(height: 18),
+                const SizedBox(height: 4),
                 Image.asset(
-                  "assets/images/logo.png",
-                  width: 150,
-                  height: 150,
+                  Constants.appLogo,
+                  width: 100,
+                  height: 100,
                 ),
-                const SizedBox(height: 22),
+                Container(
+                  margin: const EdgeInsets.all(8),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text("Upload profile image"),
+                      const SizedBox(width: 14),
+                      GestureDetector(
+                        onTap: selectProfileImage,
+                        child: profileFile != null
+                            ? CircleAvatar(
+                                backgroundImage: FileImage(profileFile!),
+                                radius: 20,
+                              )
+                            : const CircleAvatar(
+                                backgroundImage: AssetImage(
+                                    Constants.defaultPictureIconPath),
+                                radius: 20,
+                              ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.all(8),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text("Upload banner image"),
+                      const SizedBox(width: 10),
+                      GestureDetector(
+                        onTap: selectBannerImage,
+                        child: bannerFile != null
+                            ? CircleAvatar(
+                                backgroundImage: FileImage(bannerFile!),
+                                radius: 20,
+                              )
+                            : const CircleAvatar(
+                                backgroundImage: AssetImage(
+                                    Constants.defaultPictureIconPath),
+                                radius: 20,
+                              ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 18),
                 const Text(
                   "Create new account with us",
                   style: TextStyle(
@@ -62,21 +143,33 @@ class _SignupViewState extends ConsumerState<SignupView> {
                     fontSize: 16,
                   ),
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 10),
                 AuthField(
                   controller: _emailController,
                   label: "Email id",
                   hint: "Enter email id",
                   focus: true,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 AuthField(
                   controller: _passwordController,
                   label: "Password",
                   hint: "Enter password",
                   obsecure: true,
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 10),
+                AuthField(
+                  controller: _nameController,
+                  label: "Username",
+                  hint: "Enter username",
+                ),
+                const SizedBox(height: 10),
+                AuthField(
+                  controller: _bioController,
+                  label: "Bio",
+                  hint: "Enter bio",
+                ),
+                const SizedBox(height: 10),
                 MyButton(
                   text: "Sign Up",
                   colorText: Colors.white,

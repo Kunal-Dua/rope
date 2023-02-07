@@ -26,17 +26,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
-  // void logIn() async {
-  //   String res = await AuthMethods().logInUser(
-  //       email: _emailController.text, password: _passwordController.text);
-  //   if (res == "Successfully signed in") {
-  //     Navigator.of(context).pushReplacement(MaterialPageRoute(
-  //         builder: (context) => const ResponsiveLayout(
-  //               webScreenLayout: WebScreenLayout(),
-  //               mobileScreenLayout: MobileScreenLayout(),
-  //             )));
-  //   }
-  // }
+  void logIn() async {
+    ref.watch(authControllerProvider.notifier).logInUser(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +44,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     //   ),
     // );
     return Scaffold(
-      // resizeToAvoidBottomInset: false,
-      // backgroundColor: Colors.grey[200],
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Center(
           child: isLoading
@@ -105,11 +99,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                       const SizedBox(height: 20),
                       MyButton(
-                        onTap: () {
-                          if (_formKey.currentState!.validate()) {
-                            // logIn();
-                          }
-                        },
+                        onTap: logIn,
                         text: "Log In",
                         colorText: Colors.white,
                         colorBackground: Colors.blueAccent,

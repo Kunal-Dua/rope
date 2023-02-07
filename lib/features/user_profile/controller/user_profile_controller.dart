@@ -53,8 +53,8 @@ class UserProfileController extends StateNotifier<bool> {
   }) async {
     state = true;
     if (bannerImg != null) {
-      final bannerUrl = await _storageRepository.uploadImage(
-          images: ([bannerImg]), uid: userModel.uid);
+      final bannerUrl =
+          await _storageRepository.uploadImage(images: ([bannerImg]));
 
       final res = await _authRepository.updateUserBannerPic(
           userModel: userModel, bannerPic: bannerUrl[0]);
@@ -63,8 +63,8 @@ class UserProfileController extends StateNotifier<bool> {
     }
 
     if (profileImg != null) {
-      final profileUrl = await _storageRepository.uploadImage(
-          images: ([profileImg]), uid: userModel.uid);
+      final profileUrl =
+          await _storageRepository.uploadImage(images: ([profileImg]));
 
       final res = await _authRepository.updateUserProfilePic(
           userModel: userModel, profileUrl: profileUrl[0]);
@@ -94,11 +94,11 @@ class UserProfileController extends StateNotifier<bool> {
   }
 
   void followUser(
-    BuildContext context,
-    UserModel user,
-    UserModel currentUser,
+   { required BuildContext context,
+   required UserModel user,
+   required UserModel currentUser,}
   ) async {
-    if (currentUser.followers.contains(user.uid)) {
+    if (currentUser.following.contains(user.uid)) {
       user.followers.remove(currentUser.uid);
       currentUser.following.remove(user.uid);
     } else {

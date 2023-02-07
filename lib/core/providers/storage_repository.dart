@@ -15,9 +15,8 @@ class StorageRepository {
   StorageRepository({required FirebaseStorage firebaseStorage})
       : _firebaseStorage = firebaseStorage;
 
-  Future<List<String>> uploadImage(
-      {required List<File> images, required String uid}) async {
-    Reference ref = _firebaseStorage.ref().child("tweets").child(uid);
+  Future<List<String>> uploadImage({required List<File> images}) async {
+    Reference ref = _firebaseStorage.ref().child("tweets");
     List<String> imageLinks = [];
     for (final file in images) {
       String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();

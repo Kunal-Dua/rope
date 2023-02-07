@@ -66,6 +66,7 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                     name: nameController.text,
                     bio: bioController.text,
                   );
+              Navigator.pop(context);
             },
             child: const Text("Save"),
           ),
@@ -124,17 +125,17 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                 ),
                 TextField(
                   controller: nameController,
-                  decoration: const InputDecoration(
-                    hintText: 'Name',
-                    contentPadding: EdgeInsets.all(18),
+                  decoration: InputDecoration(
+                    hintText: user.name,
+                    contentPadding: const EdgeInsets.all(18),
                   ),
                 ),
                 const SizedBox(height: 20),
                 TextField(
                   controller: bioController,
-                  decoration: const InputDecoration(
-                    hintText: 'Bio',
-                    contentPadding: EdgeInsets.all(18),
+                  decoration: InputDecoration(
+                    hintText: user.bio,
+                    contentPadding: const EdgeInsets.all(18),
                   ),
                   maxLength: 250,
                   maxLines: null,

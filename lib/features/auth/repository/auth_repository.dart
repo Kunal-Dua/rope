@@ -1,11 +1,12 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:rope/core/constants/constants.dart';
 import 'package:rope/core/failure.dart';
 import 'package:rope/core/providers/firebase_provider.dart';
+import 'package:rope/core/providers/storage_repository.dart';
 import 'package:rope/core/type_def.dart';
 import 'package:rope/models/user_model.dart';
 
@@ -14,6 +15,7 @@ final authRepositoryProvider = Provider(
     firestore: ref.read(firebaseProvider),
     auth: ref.read(authProvider),
     googleSignIn: ref.read(signInWithGoogleProvider),
+    storageRepository: ref.watch(storageRepositoryProvider),
   ),
 );
 
@@ -21,13 +23,16 @@ class AuthRepository {
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
   final GoogleSignIn _googleSignIn;
+  final StorageRepository _storageRepository;
   AuthRepository({
     required FirebaseFirestore firestore,
     required FirebaseAuth auth,
     required GoogleSignIn googleSignIn,
+    required StorageRepository storageRepository,
   })  : _firestore = firestore,
         _auth = auth,
-        _googleSignIn = googleSignIn;
+        _googleSignIn = googleSignIn,
+        _storageRepository = storageRepository;
 
   CollectionReference get _users => _firestore.collection("users");
 
@@ -138,10 +143,10 @@ class AuthRepository {
 
   FutureEither<void> addToFollowers({required UserModel user}) async {
     try {
-      final doc = await _users.doc(user.uid).update({
+      await _users.doc(user.uid).update({
         "followers": user.followers,
       });
-      return right(doc);
+      return right(null);
     } catch (e) {
       return left(Failure(e.toString()));
     }
@@ -149,10 +154,59 @@ class AuthRepository {
 
   FutureEither<void> addToFollowing({required UserModel user}) async {
     try {
-      final doc = await _users.doc(user.uid).update({
+      await _users.doc(user.uid).update({
         "following": user.following,
       });
-      return right(doc);
+      return right(null);
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureEither<UserModel> signUpUser({
+    required String email,
+    required String name,
+    required String bio,
+    required String password,
+    File? profileFile,
+    File? bannerFile,
+  }) async {
+    try {
+      UserCredential currentUser = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      String profileUrl;
+      if (profileFile != null) {
+        final profile =
+            await _storageRepository.uploadImage(images: ([profileFile!]));
+        profileUrl = profile[0];
+      } else {
+        profileUrl =
+            "https://icon-library.com/images/default-user-icon/default-user-icon-8.jpg";
+      }
+
+      String bannerUrl = '';
+      if (bannerFile != null) {
+        final banner =
+            await _storageRepository.uploadImage(images: ([profileFile!]));
+        bannerUrl = banner[0];
+      }
+
+      UserModel userModel;
+
+      userModel = UserModel(
+        uid: currentUser.user!.uid,
+        name: name,
+        email: email,
+        profileUrl: profileUrl,
+        bio: bio,
+        bannerPic: bannerUrl,
+        isTwitterBlue: false,
+        followers: [],
+        following: [],
+      );
+      await _users.doc(currentUser.user!.uid).set(userModel.toMap());
+
+      return right(userModel);
     } catch (e) {
       return left(Failure(e.toString()));
     }
