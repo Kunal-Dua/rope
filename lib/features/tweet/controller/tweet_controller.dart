@@ -128,6 +128,7 @@ class TweetController extends StateNotifier<bool> {
           commentIds: [],
           retweetedBy: currentUser.name,
           reshareCount: 0,
+          datePublished: DateTime.now(),
         );
 
         final res2 = await _tweetRepository.shareTweet(tweet);
