@@ -94,6 +94,9 @@ class TweetCard extends ConsumerWidget {
                                         ),
                                       ),
                                     ),
+                                    if (user.isTwitterBlue)
+                                      SvgPicture.asset(
+                                          Constants.svgVerifiedIcon),
                                     Container(
                                       margin: const EdgeInsets.all(0),
                                       child: Text(

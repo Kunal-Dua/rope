@@ -33,6 +33,7 @@ final getUpdatedUserProvider =
 });
 
 class UserProfileController extends StateNotifier<bool> {
+  // ignore: unused_field
   final TweetRepository _tweetRepository;
   final StorageRepository _storageRepository;
   final AuthRepository _authRepository;
@@ -56,6 +57,7 @@ class UserProfileController extends StateNotifier<bool> {
     required File? profileImg,
     required String name,
     required String bio,
+    bool? verified,
   }) async {
     state = true;
     if (bannerImg != null) {
@@ -76,7 +78,6 @@ class UserProfileController extends StateNotifier<bool> {
           userModel: userModel, profileUrl: profileUrl[0]);
 
       state = false;
-
       res.fold((l) => showSnackBar(context, l.message), (r) => null);
     }
 
@@ -92,10 +93,16 @@ class UserProfileController extends StateNotifier<bool> {
     if (bio.isNotEmpty) {
       final res = await _authRepository.updateUserProfileBio(
           userModel: userModel, bio: bio);
-
       state = false;
-
       res.fold((l) => showSnackBar(context, l.message), (r) => null);
+    }
+
+    if (verified!) {
+      final res = await _authRepository.updateUserToVerified(
+          userModel: userModel, verified: verified);
+      state = false;
+      res.fold((l) => showSnackBar(context, l.message),
+          (r) => showSnackBar(context, "User verified"));
     }
   }
 

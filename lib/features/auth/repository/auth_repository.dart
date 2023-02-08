@@ -136,6 +136,18 @@ class AuthRepository {
     }
   }
 
+  FutureEither<void> updateUserToVerified(
+      {required UserModel userModel, required bool verified}) async {
+    try {
+      final doc = await _users.doc(userModel.uid).update({
+        "isTwitterBlue": verified,
+      });
+      return right(doc);
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
   Stream<UserModel> getUpdatedUserProfileData(String uid) {
     return _users.doc(uid).snapshots().map(
         (event) => UserModel.fromMap(event.data() as Map<String, dynamic>));

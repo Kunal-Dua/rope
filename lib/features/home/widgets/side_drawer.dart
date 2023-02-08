@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:rope/core/common/loading_page.dart';
 import 'package:rope/core/constants/constants.dart';
 import 'package:rope/features/auth/controller/auth_controller.dart';
+import 'package:rope/features/user_profile/controller/user_profile_controller.dart';
 import 'package:rope/features/user_profile/screens/user_profile_screen.dart';
 import 'package:rope/theme/pallete.dart';
 
@@ -54,7 +55,19 @@ class SideDrawer extends ConsumerWidget {
                 fontSize: 22,
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              ref
+                  .watch(userProfileControllerProvider.notifier)
+                  .updateUserProfile(
+                    context: context,
+                    userModel: currentUser!,
+                    bannerImg: null,
+                    profileImg: null,
+                    name: "",
+                    bio: "",
+                    verified: true,
+                  );
+            },
           ),
           ListTile(
             leading: const Icon(
