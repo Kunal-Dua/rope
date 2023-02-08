@@ -48,6 +48,12 @@ final getTweetByIdProvider = FutureProvider.family((ref, String id) {
   return doc.getTweetById(id);
 });
 
+final getTweetFromHashtag =
+    StreamProvider.family<List<TweetModel>, String>((ref, hashtag) {
+  final tweet = ref.watch(tweetProvider);
+  return tweet.getTweetByHashtag(hashtag);
+});
+
 class TweetController extends StateNotifier<bool> {
   final Ref _ref;
   final StorageRepository _storageRepository;

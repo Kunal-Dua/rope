@@ -57,7 +57,7 @@ class TweetRepository {
       final document = _firestore.collection("tweets").doc(tweet.id).update({
         "likes": tweet.likes,
       });
-      
+
       return right(document);
     } catch (e) {
       return left(Failure(e.toString()));
@@ -93,6 +93,20 @@ class TweetRepository {
     final doc = await _firestore.collection("tweets").doc(id).get();
     final document = doc.data() as Map<String, dynamic>;
     return TweetModel.fromMap(document);
+  }
+
+  Stream<List<TweetModel>> getTweetByHashtag(String hashtag) {
+    return _firestore
+        .collection("tweets")
+        .where('hashtags', arrayContains: hashtag)
+        .snapshots()
+        .map((event) {
+      List<TweetModel> doc = [];
+      for (var document in event.docs) {
+        doc.add(TweetModel.fromMap(document.data()));
+      }
+      return doc;
+    });
   }
 
   Stream<List<TweetModel>> getUserTweets(String uid) {

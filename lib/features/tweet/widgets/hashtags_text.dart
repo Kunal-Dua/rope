@@ -1,4 +1,6 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:rope/features/tweet/screens/hashtag_screen.dart';
 import 'package:rope/theme/pallete.dart';
 
 class HashtagText extends StatelessWidget {
@@ -19,6 +21,12 @@ class HashtagText extends StatelessWidget {
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => HashtagScreen(hashtag: element),
+                ));
+              },
           ),
         );
       } else if (element.startsWith('https://') || element.startsWith('www.')) {
