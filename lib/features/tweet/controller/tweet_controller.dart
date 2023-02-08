@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_brace_in_string_interps
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -79,7 +81,9 @@ class TweetController extends StateNotifier<bool> {
     final res = await _tweetRepository.likeTweet(tweet);
     res.fold((l) => null, (r) {
       _notificationController.createNotification(
-        text: '${user.name} liked your tweet',
+        text: tweet.uid == user.uid
+            ? 'you liked your tweet'
+            : '${user.name} liked your tweet',
         postId: tweet.id,
         uid: tweet.uid,
         notificationType: NotificationType.like,
@@ -121,7 +125,16 @@ class TweetController extends StateNotifier<bool> {
         );
 
         final res2 = await _tweetRepository.shareTweet(tweet);
-        res2.fold((l) => showSnackBar(context, l.message), (r) => null);
+        res2.fold((l) => showSnackBar(context, l.message), (r) {
+          _notificationController.createNotification(
+            text: tweet.uid == currentUser.uid
+                ? 'you reshared your tweet'
+                : '${currentUser.name} reshared your tweet',
+            postId: tweet.id,
+            uid: tweet.uid,
+            notificationType: NotificationType.retweet,
+          );
+        });
       });
     } catch (e) {
       print(e.toString());
@@ -133,6 +146,7 @@ class TweetController extends StateNotifier<bool> {
     required String text,
     required BuildContext context,
     required String repliedTo,
+    required String repiledToUserId,
     String? tweetID,
   }) {
     if (text.isEmpty) {
@@ -145,6 +159,7 @@ class TweetController extends StateNotifier<bool> {
         text: text,
         context: context,
         repliedTo: repliedTo,
+        repiledToUserId: repiledToUserId,
       );
     } else {
       _shareTextTweet(
@@ -152,6 +167,7 @@ class TweetController extends StateNotifier<bool> {
         context: context,
         repliedTo: repliedTo,
         tweetID: tweetID,
+        repiledToUserId: repiledToUserId,
       );
     }
   }
@@ -161,6 +177,7 @@ class TweetController extends StateNotifier<bool> {
     required String text,
     required BuildContext context,
     required String repliedTo,
+    required String repiledToUserId,
   }) async {
     state = true;
     String link = _getLinkFromText(text);
@@ -187,13 +204,25 @@ class TweetController extends StateNotifier<bool> {
 
     final res = await _tweetRepository.shareTweet(tweet);
     state = false;
-    res.fold((l) => showSnackBar(context, l.message), (r) => null);
+    res.fold((l) => showSnackBar(context, l.message), (r) {
+      if (repiledToUserId.isNotEmpty) {
+        _notificationController.createNotification(
+          text: tweet.uid == user.uid
+              ? 'you replied to your tweet ${text}'
+              : '${user.name} replied your tweet ${text}',
+          postId: tweet.id,
+          uid: tweet.uid,
+          notificationType: NotificationType.reply,
+        );
+      }
+    });
   }
 
   void _shareTextTweet({
     required String text,
     required BuildContext context,
     required String repliedTo,
+    required String repiledToUserId,
     String? tweetID,
   }) async {
     state = true;
@@ -222,7 +251,18 @@ class TweetController extends StateNotifier<bool> {
 
     final res = await _tweetRepository.shareTweet(tweet);
     state = false;
-    res.fold((l) => showSnackBar(context, l.message), (r) => null);
+    res.fold((l) => showSnackBar(context, l.message), (r) {
+      if (repiledToUserId.isNotEmpty) {
+        _notificationController.createNotification(
+          text: tweet.uid == user.uid
+              ? 'you replied to your tweet ${text}'
+              : '${user.name} replied your tweet ${text}',
+          postId: tweet.id,
+          uid: tweet.uid,
+          notificationType: NotificationType.reply,
+        );
+      }
+    });
   }
 
   String _getLinkFromText(String text) {

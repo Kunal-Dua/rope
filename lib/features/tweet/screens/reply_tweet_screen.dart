@@ -47,6 +47,7 @@ class ReplyScreen extends ConsumerWidget {
               context: context,
               repliedTo: tweet.id,
               tweetID: tweetID,
+              repiledToUserId: tweet.uid,
             );
 
             ref

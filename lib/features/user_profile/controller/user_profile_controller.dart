@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rope/core/enums/notification_type_enums%20copy.dart';
 import 'package:rope/core/utils.dart';
 import 'package:rope/core/providers/storage_repository.dart';
 import 'package:rope/features/auth/repository/auth_repository.dart';
+import 'package:rope/features/notification/controller/notification_controller.dart';
 import 'package:rope/features/tweet/repository/tweet_repository.dart';
 import 'package:rope/models/tweet_model.dart';
 import 'package:rope/models/user_model.dart';
@@ -14,6 +16,7 @@ final userProfileControllerProvider =
     tweetRepository: ref.watch(tweetProvider),
     storageRepository: ref.watch(storageRepositoryProvider),
     authRepository: ref.watch(authRepositoryProvider),
+    notificationController: ref.watch(notificationControllerProvider.notifier),
   );
 });
 
@@ -33,14 +36,17 @@ class UserProfileController extends StateNotifier<bool> {
   final TweetRepository _tweetRepository;
   final StorageRepository _storageRepository;
   final AuthRepository _authRepository;
+  final NotificationController _notificationController;
 
   UserProfileController({
     required TweetRepository tweetRepository,
     required StorageRepository storageRepository,
     required AuthRepository authRepository,
+    required NotificationController notificationController,
   })  : _tweetRepository = tweetRepository,
         _storageRepository = storageRepository,
         _authRepository = authRepository,
+        _notificationController = notificationController,
         super(false);
 
   void updateUserProfile({
@@ -93,11 +99,11 @@ class UserProfileController extends StateNotifier<bool> {
     }
   }
 
-  void followUser(
-   { required BuildContext context,
-   required UserModel user,
-   required UserModel currentUser,}
-  ) async {
+  void followUser({
+    required BuildContext context,
+    required UserModel user,
+    required UserModel currentUser,
+  }) async {
     if (currentUser.following.contains(user.uid)) {
       user.followers.remove(currentUser.uid);
       currentUser.following.remove(user.uid);
@@ -112,7 +118,14 @@ class UserProfileController extends StateNotifier<bool> {
     final res = await _authRepository.addToFollowers(user: user);
     res.fold((l) => showSnackBar(context, l.message), (r) async {
       final res2 = await _authRepository.addToFollowing(user: currentUser);
-      res2.fold((l) => showSnackBar(context, l.message), (r) => null);
+      res2.fold((l) => showSnackBar(context, l.message), (r) {
+        _notificationController.createNotification(
+          text: '${user.name} followed you',
+          postId: '',
+          uid: user.uid,
+          notificationType: NotificationType.follow,
+        );
+      });
     });
   }
 }

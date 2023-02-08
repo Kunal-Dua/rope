@@ -22,6 +22,7 @@ final authRepositoryProvider = Provider(
 class AuthRepository {
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
+  // ignore: unused_field
   final GoogleSignIn _googleSignIn;
   final StorageRepository _storageRepository;
   AuthRepository({
@@ -80,7 +81,7 @@ class AuthRepository {
 
   Future<List<UserModel>> getUserByName(String name) async {
     final document =
-        await _users.where('name', isLessThanOrEqualTo: name + 'z').get();
+        await _users.where('name', isLessThanOrEqualTo: name).get();
 
     return document.docs
         .map((doc) => UserModel.fromMap(doc.data() as Map<String, dynamic>))
@@ -176,7 +177,7 @@ class AuthRepository {
       String profileUrl;
       if (profileFile != null) {
         final profile =
-            await _storageRepository.uploadImage(images: ([profileFile!]));
+            await _storageRepository.uploadImage(images: ([profileFile]));
         profileUrl = profile[0];
       } else {
         profileUrl =
