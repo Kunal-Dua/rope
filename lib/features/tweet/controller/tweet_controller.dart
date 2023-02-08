@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rope/core/enums/notification_type_enums%20copy.dart';
 import 'package:rope/core/enums/tweet_type_enums.dart';
 import 'package:rope/core/providers/storage_repository.dart';
 import 'package:rope/core/utils.dart';
 import 'package:rope/features/auth/controller/auth_controller.dart';
+import 'package:rope/features/notification/controller/notification_controller.dart';
 import 'package:rope/features/tweet/repository/tweet_repository.dart';
 import 'package:rope/models/tweet_model.dart';
 import 'package:rope/models/user_model.dart';
@@ -18,6 +20,7 @@ final tweetControllerProvider =
     ref: ref,
     tweetRepository: ref.watch(tweetProvider),
     storageRepository: ref.watch(storageRepositoryProvider),
+    notificationController: ref.watch(notificationControllerProvider.notifier),
   );
 });
 
@@ -47,14 +50,17 @@ class TweetController extends StateNotifier<bool> {
   final Ref _ref;
   final StorageRepository _storageRepository;
   final TweetRepository _tweetRepository;
+  final NotificationController _notificationController;
 
   TweetController({
     required Ref ref,
     required StorageRepository storageRepository,
     required TweetRepository tweetRepository,
+    required NotificationController notificationController,
   })  : _ref = ref,
         _storageRepository = storageRepository,
         _tweetRepository = tweetRepository,
+        _notificationController = notificationController,
         super(false);
 
   Future<List<TweetModel>> getTweets() async {
@@ -63,18 +69,22 @@ class TweetController extends StateNotifier<bool> {
   }
 
   void likeTweet(TweetModel tweet, UserModel user) async {
-    try {
-      List<String> likes = tweet.likes;
-      if (likes.contains(user.uid)) {
-        likes.remove(user.uid);
-      } else {
-        likes.add(user.uid);
-      }
-      tweet = tweet.copyWith(likes: likes);
-      await _tweetRepository.likeTweet(tweet);
-    } catch (e) {
-      print(e.toString());
+    List<String> likes = tweet.likes;
+    if (likes.contains(user.uid)) {
+      likes.remove(user.uid);
+    } else {
+      likes.add(user.uid);
     }
+    tweet = tweet.copyWith(likes: likes);
+    final res = await _tweetRepository.likeTweet(tweet);
+    res.fold((l) => null, (r) {
+      _notificationController.createNotification(
+        text: '${user.name} liked your tweet',
+        postId: tweet.id,
+        uid: tweet.uid,
+        notificationType: NotificationType.like,
+      );
+    });
   }
 
   void updateCommentIdsAfterReply(
