@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -38,39 +39,77 @@ class AuthRepository {
   CollectionReference get _users => _firestore.collection("users");
   Stream<User?> get authStateChange => _auth.authStateChanges();
 
-  Future<Either<String, UserModel>> signInwithGoogle() async {
+  FutureEither<UserModel> signInwithGoogle() async {
     try {
-      final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
-
-      final GoogleSignInAuthentication gAuth = await gUser!.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: gAuth.accessToken,
-        idToken: gAuth.idToken,
+      UserModel userModel = UserModel(
+        uid: '',
+        name: '',
+        email: '',
+        profileUrl: '',
+        bio: '',
+        bannerPic: '',
+        followers: [],
+        following: [],
+        isTwitterBlue: false,
       );
-      UserModel userModel;
+      if (kIsWeb) {
+        GoogleAuthProvider googleProvider = GoogleAuthProvider();
 
-      UserCredential currentUser = await _auth.signInWithCredential(credential);
-      if (currentUser.additionalUserInfo!.isNewUser) {
-        userModel = UserModel(
-          uid: currentUser.user!.uid,
-          name: currentUser.user!.displayName!,
-          email: currentUser.user!.email!,
-          profileUrl: currentUser.user!.photoURL!,
-          bio: '',
-          bannerPic: '',
-          followers: [],
-          following: [],
-          isTwitterBlue: false,
+        googleProvider
+            .addScope('https://www.googleapis.com/auth/contacts.readonly');
+
+        UserCredential currentUser =
+            await _auth.signInWithPopup(googleProvider);
+        if (currentUser.additionalUserInfo!.isNewUser) {
+          userModel = UserModel(
+            uid: currentUser.user!.uid,
+            name: currentUser.user!.displayName!,
+            email: currentUser.user!.email!,
+            profileUrl: currentUser.user!.photoURL!,
+            bio: '',
+            bannerPic: '',
+            followers: [],
+            following: [],
+            isTwitterBlue: false,
+          );
+
+          await _users.doc(currentUser.user!.uid).set(userModel.toMap());
+        } else {
+          userModel = await getUserData(currentUser.user!.uid);
+        }
+      } else {
+        final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+
+        final GoogleSignInAuthentication gAuth = await gUser!.authentication;
+
+        final credential = GoogleAuthProvider.credential(
+          accessToken: gAuth.accessToken,
+          idToken: gAuth.idToken,
         );
 
-        await _users.doc(currentUser.user!.uid).set(userModel.toMap());
-      } else {
-        userModel = await getUserData(currentUser.user!.uid);
+        UserCredential currentUser =
+            await _auth.signInWithCredential(credential);
+        if (currentUser.additionalUserInfo!.isNewUser) {
+          userModel = UserModel(
+            uid: currentUser.user!.uid,
+            name: currentUser.user!.displayName!,
+            email: currentUser.user!.email!,
+            profileUrl: currentUser.user!.photoURL!,
+            bio: '',
+            bannerPic: '',
+            followers: [],
+            following: [],
+            isTwitterBlue: false,
+          );
+
+          await _users.doc(currentUser.user!.uid).set(userModel.toMap());
+        } else {
+          userModel = await getUserData(currentUser.user!.uid);
+        }
       }
       return right(userModel);
     } catch (e) {
-      return left(e.toString());
+      return left(Failure(e.toString()));
     }
   }
 
