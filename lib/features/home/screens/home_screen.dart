@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rope/core/constants/constants.dart';
 import 'package:rope/features/auth/controller/auth_controller.dart';
 import 'package:rope/features/home/widgets/side_drawer.dart';
 import 'package:rope/features/notification/screens/notification_screen.dart';
@@ -27,6 +28,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final user = ref.watch(userProvider)!;
 
     return Scaffold(
+      appBar: _page == 0
+          ? AppBar(
+              title: Image.asset(
+                Constants.appLogo,
+                height: 40,
+              ),
+              centerTitle: true,
+            )
+          : null,
       drawer: const SideDrawer(),
       body: IndexedStack(
         index: _page,
@@ -36,19 +46,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           NotificationScreen(),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (() {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const CreateTweetScreen()),
-          );
-        }),
-        child: const Icon(
-          Icons.add,
-          color: Pallete.whiteColor,
-          size: 28,
-        ),
-      ),
+      floatingActionButton: _page == 0
+          ? FloatingActionButton(
+              onPressed: (() {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const CreateTweetScreen()),
+                );
+              }),
+              child: const Icon(
+                Icons.add,
+                color: Pallete.whiteColor,
+                size: 28,
+              ),
+            )
+          : null,
       bottomNavigationBar: CupertinoTabBar(
           backgroundColor: Pallete.backgroundColor,
           currentIndex: _page,
