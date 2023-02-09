@@ -80,7 +80,9 @@ class SideDrawer extends ConsumerWidget {
                 fontSize: 22,
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              ref.watch(logout);
+            },
           ),
         ]),
       ),

@@ -223,4 +223,9 @@ class AuthRepository {
       return left(Failure(e.toString()));
     }
   }
+
+  FutureEither<void> logout() async {
+    final doc = _auth.signOut();
+    return right(doc);
+  }
 }

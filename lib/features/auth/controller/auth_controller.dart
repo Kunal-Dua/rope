@@ -34,6 +34,10 @@ final getCurrentUserDataProvider = FutureProvider((ref) {
   return userDetails.value;
 });
 
+final logout = FutureProvider((ref) {
+  ref.watch(authRepositoryProvider).logout();
+});
+
 class AuthController extends StateNotifier<bool> {
   final AuthRepository _authRepository;
   final Ref _ref;
