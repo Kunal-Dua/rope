@@ -74,8 +74,8 @@ class AuthController extends StateNotifier<bool> {
       name: name,
       bio: bio,
       password: password,
-      profileFile: profileFile!,
-      bannerFile: bannerFile!,
+      profileFile: profileFile,
+      bannerFile: bannerFile,
     );
     state = false;
     user.fold((l) => showSnackBar(context, l.message),

@@ -234,7 +234,6 @@ class AuthRepository {
         profileUrl =
             "https://icon-library.com/images/default-user-icon/default-user-icon-8.jpg";
       }
-
       String bannerUrl = '';
       if (bannerFile != null) {
         final banner =

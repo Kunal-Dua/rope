@@ -7,7 +7,7 @@ import 'package:rope/features/auth/controller/auth_controller.dart';
 import 'package:rope/features/auth/screen/login_screen.dart';
 import 'package:rope/features/auth/widget/auth_field.dart';
 import 'package:rope/features/auth/widget/button.dart';
-import 'package:rope/theme/pallete.dart';
+import 'package:rope/features/home/screens/home_screen.dart';
 
 class SignupView extends ConsumerStatefulWidget {
   const SignupView({super.key});
@@ -53,9 +53,6 @@ class _SignupViewState extends ConsumerState<SignupView> {
   }
 
   void signup() async {
-    if (profileFile == null) {
-      showSnackBar(context, "Select Profil");
-    }
     ref.read(authControllerProvider.notifier).signInWithEmailAndPassword(
         context: context,
         email: _emailController.text,
@@ -64,6 +61,10 @@ class _SignupViewState extends ConsumerState<SignupView> {
         password: _passwordController.text,
         profileFile: profileFile,
         bannerFile: bannerFile);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+    );
   }
 
   @override
