@@ -18,7 +18,8 @@ class TweetModel {
   final int reshareCount;
   final String retweetedBy;
   final String repliedTo;
-  TweetModel({
+  
+  const TweetModel({
     required this.uid,
     required this.text,
     required this.link,

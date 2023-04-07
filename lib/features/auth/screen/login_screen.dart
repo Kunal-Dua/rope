@@ -117,7 +117,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              GoogleSignInButton(),
+                              const GoogleSignInButton(),
                               const SizedBox(width: 20),
                               if (platform == TargetPlatform.iOS)
                                 SquareTile(

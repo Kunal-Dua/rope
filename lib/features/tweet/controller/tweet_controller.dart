@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_brace_in_string_interps
+// ignore_for_file: unnecessary_brace_in_string_interps, avoid_print
 
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -16,6 +16,7 @@ import 'package:uuid/uuid.dart';
 
 final tweetControllerProvider =
     StateNotifierProvider<TweetController, bool>((ref) {
+  // ignore: unused_local_variable
   final tweetRepository = ref.watch(tweetProvider);
 
   return TweetController(

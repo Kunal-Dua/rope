@@ -58,6 +58,7 @@ class _MyAppState extends ConsumerState<MyApp> {
               ),
               routeInformationParser: const RoutemasterParser(),
             ),
+        // ignore: avoid_types_as_parameter_names, non_constant_identifier_names
         error: (error, StackTrace) => Text(error.toString()),
         loading: () => const CircularProgressIndicator());
   }

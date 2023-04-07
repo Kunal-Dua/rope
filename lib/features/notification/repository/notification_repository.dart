@@ -19,6 +19,7 @@ final noticationRepositoryProvider = Provider(
 class NotificationRepository {
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
+  // ignore: unused_field
   final StorageRepository _storageRepository;
 
   NotificationRepository({

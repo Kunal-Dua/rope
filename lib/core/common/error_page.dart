@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-
-import 'package:flutter/material.dart';
-
 class ErrorText extends StatelessWidget {
   final String error;
   const ErrorText({

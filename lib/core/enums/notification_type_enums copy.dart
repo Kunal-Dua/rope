@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 enum NotificationType {
   like('like'),
   retweet('retweet'),

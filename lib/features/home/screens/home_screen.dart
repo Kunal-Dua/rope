@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rope/core/constants/constants.dart';
-import 'package:rope/features/auth/controller/auth_controller.dart';
 import 'package:rope/features/home/widgets/side_drawer.dart';
 import 'package:rope/features/notification/screens/notification_screen.dart';
 import 'package:rope/features/search/screens/search_screen.dart';
@@ -25,7 +24,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(userProvider)!;
+    // final user = ref.watch(userProvider)!;
 
     return Scaffold(
       appBar: _page == 0
