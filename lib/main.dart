@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rope/features/auth/controller/auth_controller.dart';
-import 'package:rope/features/auth/screen/login_screen.dart';
 import 'package:rope/models/user_model.dart';
 import 'package:rope/router.dart';
 import 'package:rope/theme/theme.dart';
@@ -44,7 +43,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     return ref.watch(authStateChangeProvider).when(
         data: (data) => MaterialApp.router(
               debugShowCheckedModeBanner: false,
-              title: 'Flutter Demo',
+              title: 'Rope - Social Networking App',
               theme: AppTheme.theme,
               routerDelegate: RoutemasterDelegate(
                 routesBuilder: (context) {

@@ -37,130 +37,133 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final isLoading = ref.watch(authControllerProvider);
     var platform = Theme.of(context).platform;
-    // SystemChrome.setSystemUIOverlayStyle(
-    //   const SystemUiOverlayStyle(
-    //     statusBarColor: Colors.black,
-    //     statusBarBrightness: Brightness.light,
-    //   ),
-    // );
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: Center(
-          child: isLoading
-              ? const CircularProgressIndicator()
-              : Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 18),
-                      Image.asset(
-                        "assets/images/logo.png",
-                        width: 150,
-                        height: 150,
-                      ),
-                      const SizedBox(height: 22),
-                      const Text(
-                        "Welcome back you've been missed",
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16,
-                        ),
-                      ),
-                      const SizedBox(height: 18),
-                      AuthField(
-                        controller: _emailController,
-                        label: "Email id",
-                        hint: "Enter email id",
-                        focus: true,
-                      ),
-                      const SizedBox(height: 20),
-                      AuthField(
-                        controller: _passwordController,
-                        label: "Password",
-                        hint: "Enter password",
-                        obsecure: true,
-                      ),
-                      const SizedBox(height: 10),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: const [
-                            Text(
-                              "Forgot password",
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      MyButton(
-                        onTap: logIn,
-                        text: "Log In",
-                        colorText: Colors.white,
-                        colorBackground: Colors.blueAccent,
-                      ),
-                      const SizedBox(height: 14),
-                      const Text(
-                        "Or continue with",
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16,
-                        ),
-                      ),
-                      const SizedBox(height: 14),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: Container(
+            padding: MediaQuery.of(context).size.width > 600
+                ? EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width / 3)
+                : const EdgeInsets.symmetric(horizontal: 32),
+            child: Center(
+              child: isLoading
+                  ? const CircularProgressIndicator()
+                  : Form(
+                      key: _formKey,
+                      child: Column(
                         children: [
-                          GoogleSignInButton(),
-                          const SizedBox(width: 20),
-                          if (platform == TargetPlatform.iOS)
-                            SquareTile(
-                              onTap: () {},
-                              imagePath: "assets/images/apple_logo.png",
-                            ),
-                          const SizedBox(width: 20),
-                          SquareTile(
-                            onTap: () {},
-                            imagePath: "assets/images/facebook_logo.png",
+                          const SizedBox(height: 18),
+                          Image.asset(
+                            "assets/images/logo.png",
+                            width: 150,
+                            height: 150,
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 50),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
+                          const SizedBox(height: 22),
                           const Text(
-                            "Not a member?",
+                            "Welcome back you've been missed",
                             style: TextStyle(
                               color: Colors.grey,
                               fontSize: 16,
                             ),
                           ),
-                          const SizedBox(width: 4),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const SignupView(),
-                              ));
-                            },
-                            child: const Text(
-                              "Register now",
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontSize: 16,
-                              ),
+                          const SizedBox(height: 18),
+                          AuthField(
+                            controller: _emailController,
+                            label: "Email id",
+                            hint: "Enter email id",
+                            focus: true,
+                          ),
+                          const SizedBox(height: 20),
+                          AuthField(
+                            controller: _passwordController,
+                            label: "Password",
+                            hint: "Enter password",
+                            obsecure: true,
+                          ),
+                          const SizedBox(height: 10),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 25.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: const [
+                                Text(
+                                  "Forgot password",
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
                             ),
+                          ),
+                          const SizedBox(height: 20),
+                          MyButton(
+                            onTap: logIn,
+                            text: "Log In",
+                            colorText: Colors.white,
+                            colorBackground: Colors.blueAccent,
+                          ),
+                          const SizedBox(height: 14),
+                          const Text(
+                            "Or continue with",
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 14),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              GoogleSignInButton(),
+                              const SizedBox(width: 20),
+                              if (platform == TargetPlatform.iOS)
+                                SquareTile(
+                                  onTap: () {},
+                                  imagePath: "assets/images/apple_logo.png",
+                                ),
+                              const SizedBox(width: 20),
+                              SquareTile(
+                                onTap: () {},
+                                imagePath: "assets/images/facebook_logo.png",
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 50),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                "Not a member?",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => const SignupView(),
+                                  ));
+                                },
+                                child: const Text(
+                                  "Register now",
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
+                    ),
+            ),
+          ),
         ),
       ),
     );
