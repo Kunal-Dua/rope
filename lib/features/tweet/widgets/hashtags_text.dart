@@ -4,7 +4,7 @@ import 'package:rope/features/tweet/screens/hashtag_screen.dart';
 import 'package:rope/theme/pallete.dart';
 
 class HashtagText extends StatelessWidget {
-  final String text;
+  final text;
   const HashtagText({super.key, required this.text});
 
   @override
@@ -45,7 +45,6 @@ class HashtagText extends StatelessWidget {
             text: '$element ',
             style: const TextStyle(
               fontSize: 18,
-              color: Pallete.whiteColor,
             ),
           ),
         );
